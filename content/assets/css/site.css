@@ -1,0 +1,217 @@
+/* Общие стили сайта ВНЖ Кипра.
+   Палитра и шкала контраста проверены расчётом WCAG, см. docs/ART-DIRECTION.md
+   Ключевое: кирпичный акцент на оливе даёт 1.76:1 и нечитаем, поэтому
+   на тёмных секциях кнопка бумажная. */
+
+@font-face{font-family:'Onest';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/onest-600-2.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Onest';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/onest-600-3.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212}
+@font-face{font-family:'Onest';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/onest-700-5.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Onest';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/onest-700-6.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/manrope-400-2.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/manrope-400-3.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/manrope-500-5.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/manrope-500-6.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/manrope-600-8.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/manrope-600-9.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212}
+
+:root{
+  --ink:#0a0a0a; --paper:#fafaf9;
+  --olive:#3B4A2F; --olive-deep:#2C3823; --sand:#EDE7DA;
+  --brick:#B4472E; --brick-hi:#C9563B;
+  /* заливка кнопки и цвет текста это разные задачи: #B4472E как ТЕКСТ на песке
+     даёт 4.39:1 и не проходит AA, поэтому у ссылок свой затемнённый оттенок */
+  --brick-text:#9A3A22;
+  --on-paper-1:rgba(10,10,10,1);
+  --on-paper-2:rgba(10,10,10,.60);
+  --on-paper-line:rgba(10,10,10,.10);
+  --on-olive-1:rgba(250,250,249,1);
+  --on-olive-2:rgba(250,250,249,.72);
+  --on-olive-line:rgba(250,250,249,.14);
+  --e-enter:cubic-bezier(0.16,1,0.3,1);
+  --e-ui:cubic-bezier(0.25,1,0.5,1);
+  --e-scroll:cubic-bezier(0.87,0,0.13,1);
+  --shadow-brick:0 14px 40px rgba(180,71,46,.20);
+  --shadow-olive:0 14px 40px rgba(59,74,47,.16);
+  --r:14px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--on-paper-1);
+  font-family:'Manrope',system-ui,sans-serif;font-size:17px;line-height:1.65;
+  font-weight:400;overflow-x:hidden}
+img,canvas{display:block;max-width:100%}
+a{color:inherit}
+
+.grid{display:grid;
+  grid-template-columns:[full-start] minmax(1rem,1fr) [content-start] minmax(0,1240px) [content-end] minmax(1rem,1fr) [full-end]}
+.grid > *{grid-column:content}
+.grid > .full{grid-column:full}
+
+h1,h2,h3,.display{font-family:'Onest',system-ui,sans-serif;font-weight:700;line-height:1.02;letter-spacing:-.03em}
+h1{font-size:clamp(30px,3.5vw,54px);letter-spacing:-.035em}
+/* кегль h2 снижен: в узкой колонке 64px ломали «Как я беру деньги» на три строки.
+   balance довешивает: браузер сам выравнивает строки и убирает висячие слова */
+h2{font-size:clamp(28px,3.4vw,50px);text-wrap:balance}
+h1{text-wrap:balance}
+/* средний ярус шкалы: без него прыжок с заголовка сразу на 18px читается провалом */
+h3{font-size:clamp(21px,2.1vw,25px);letter-spacing:-.02em;line-height:1.22}
+p{max-width:62ch}
+.lead{font-size:clamp(17px,1.5vw,21px);color:var(--on-paper-2)}
+
+.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.045;mix-blend-mode:overlay}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:'Manrope',sans-serif;font-weight:600;font-size:16px;
+  padding:16px 30px;border-radius:var(--r);border:0;cursor:pointer;
+  text-decoration:none;white-space:nowrap;
+  transition:transform .3s var(--e-ui),background-color .3s var(--e-ui),box-shadow .3s var(--e-ui)}
+.btn-primary{background:var(--brick);color:var(--paper);box-shadow:var(--shadow-brick)}
+.btn-primary:hover{background:var(--brick-hi);transform:translateY(-2px)}
+.btn-primary:active{transform:translateY(1px) scale(.99)}
+.on-dark .btn-primary{background:var(--paper);color:var(--ink);box-shadow:var(--shadow-olive)}
+.on-dark .btn-primary:hover{background:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--on-paper-line);color:var(--on-paper-1)}
+.btn-ghost:hover{border-color:rgba(10,10,10,.35)}
+.on-dark .btn-ghost{border-color:var(--on-olive-line);color:var(--on-olive-1)}
+.on-dark .btn-ghost:hover{border-color:rgba(250,250,249,.5)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{
+  outline:3px solid var(--brick);outline-offset:3px;border-radius:6px}
+
+section{padding:clamp(72px,9vw,140px) 0}
+.s-paper{background:var(--paper)}
+.s-sand{background:var(--sand)}
+.s-olive{background:var(--olive);color:var(--on-olive-1)}
+.s-olive p{color:var(--on-olive-2)}
+.s-ink{background:var(--ink);color:var(--on-olive-1)}
+.s-ink p{color:rgba(250,250,249,.72)}
+.eyebrow{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-paper-2);font-weight:600}
+.s-olive .eyebrow,.s-ink .eyebrow{color:var(--on-olive-2)}
+/* ширина в px, а не в ch: единица ch считается от шрифта КОНТЕЙНЕРА (17px),
+   поэтому 20ch давали 170px и рвали заголовок на три строки */
+.head-wrap{max-width:min(100%,34rem);margin-bottom:clamp(28px,4vw,54px)}
+
+/* Правая колонка несёт содержание, а не воздух: шесть секций подряд с пустыми
+   55-60% ширины читались как недовёрстанная сетка, а не как асимметрия. */
+.two-col{display:grid;gap:clamp(28px,4vw,64px);
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:start}
+.aside-card{padding:clamp(24px,2.4vw,32px);border-radius:var(--r);
+  background:var(--sand);border:1px solid var(--on-paper-line)}
+.on-dark .aside-card,.s-olive .aside-card,.s-ink .aside-card{
+  background:rgba(250,250,249,.06);border-color:var(--on-olive-line)}
+/* внутри колонки ширину заголовка ограничивает сама колонка: второй лимит
+   в 20ch превращал «Записаться на разбор» в три строки */
+.two-col .head-wrap{max-width:none}
+.aside-card h3{margin-bottom:.6rem}
+.aside-card p{font-size:15.5px;color:var(--on-paper-2)}
+.on-dark .aside-card p{color:var(--on-olive-2)}
+
+/* ровные строки с ценностью слева и пояснением справа: список без буллетов
+   и без линейки под каждой строкой */
+.rows{display:grid;gap:0;margin-top:6px}
+.rows li{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:14px;
+  padding:13px 0;border-bottom:1px solid var(--on-paper-line);font-size:15.5px}
+.rows li:last-child{border-bottom:0}
+.on-dark .rows li,.s-olive .rows li,.s-ink .rows li{border-color:var(--on-olive-line)}
+.rows b{font-family:'Onest',sans-serif;font-weight:700;color:var(--brick-text);
+  font-size:15px;min-width:2.2em}
+.on-dark .rows b,.s-olive .rows b,.s-ink .rows b{color:rgba(250,250,249,.55)}
+
+/* подвал перестаёт быть тупиком: со страницы в 7800px должен быть выход */
+.foot-nav{display:grid;gap:10px}
+.foot-nav a{text-decoration:none;border-bottom:1px solid rgba(250,250,249,.18);
+  padding-bottom:8px;transition:border-color .3s var(--e-ui)}
+.foot-nav a:hover{border-color:rgba(250,250,249,.6)}
+
+@media (max-width:860px){
+  .two-col{grid-template-columns:1fr}
+}
+.bleed-left{margin-left:clamp(-40px,-3vw,0px)}
+
+.todo{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;
+  padding:3px 8px;border-radius:6px;background:rgba(180,71,46,.14);
+  color:var(--brick);border:1px dashed rgba(180,71,46,.5)}
+.on-dark .todo,.s-olive .todo,.s-ink .todo{background:rgba(250,250,249,.10);color:rgba(250,250,249,.82);border-color:rgba(250,250,249,.3)}
+
+/* ── шапка подстраниц ─────────────────────────────────── */
+.topbar{position:sticky;top:0;z-index:40;background:rgba(250,250,249,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--on-paper-line)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:68px}
+.brand{font-family:'Onest',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none}
+.topbar .btn{padding:11px 20px;font-size:15px}
+
+.crumbs{font-size:14px;color:var(--on-paper-2);padding-top:26px}
+.crumbs a{text-decoration:none;border-bottom:1px solid var(--on-paper-line)}
+
+.page-hero{display:grid;gap:clamp(24px,4vw,52px);grid-template-columns:1.05fr .95fr;align-items:center;
+  padding-top:clamp(30px,4vw,52px)}
+.page-hero img{width:100%;border-radius:var(--r);box-shadow:var(--shadow-olive)}
+.page-hero .cap{font-size:12.5px;color:var(--on-paper-2);margin-top:8px}
+
+/* карточки требований: не таблица с линейками под каждой строкой */
+.reqs{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.reqs div{padding:24px;border-radius:var(--r);background:var(--paper);border:1px solid var(--on-paper-line)}
+.s-sand .reqs div{background:rgba(250,250,249,.72)}
+.reqs h3{font-size:21px;margin-bottom:.35rem}
+.reqs p{font-size:15.5px;color:var(--on-paper-2)}
+
+.docs{display:grid;gap:0;counter-reset:d}
+.docs li{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:18px;
+  padding:20px 0;border-top:1px solid var(--on-olive-line)}
+.docs li:last-child{border-bottom:1px solid var(--on-olive-line)}
+.docs li::before{counter-increment:d;content:counter(d,decimal-leading-zero);
+  font-family:'Onest',sans-serif;font-weight:700;font-size:20px;color:rgba(250,250,249,.4)}
+
+.faq{border-top:1px solid var(--on-paper-line)}
+.faq details{border-bottom:1px solid var(--on-paper-line)}
+.faq summary{cursor:pointer;padding:22px 0;font-weight:600;font-size:21px;list-style:none;
+  display:flex;justify-content:space-between;gap:1rem;
+  transition:color .3s var(--e-ui)}
+.faq summary:hover{color:var(--brick-text)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';font-family:'Onest',sans-serif;font-size:24px;line-height:1;color:var(--brick-text)}
+.faq details[open] summary::after{content:'\2212'}
+.faq p{padding-bottom:22px;color:var(--on-paper-2)}
+
+form{display:grid;gap:18px;max-width:560px}
+.field{display:grid;gap:8px}
+label{font-weight:600;font-size:15px}
+input,textarea{font-family:inherit;font-size:16px;padding:14px 16px;border-radius:10px;
+  background:var(--paper);color:var(--ink);border:1px solid rgba(10,10,10,.28)}
+.on-dark input,.on-dark textarea{background:rgba(250,250,249,.96)}
+input::placeholder,textarea::placeholder{color:rgba(10,10,10,.55)}
+/* невалидное поле подсвечивается рамкой, а не только текстом ошибки:
+   по одному красному тексту не видно, КУДА возвращаться */
+input[aria-invalid="true"],textarea[aria-invalid="true"]{
+  border-color:#B4472E;box-shadow:0 0 0 3px rgba(180,71,46,.22)}
+.hint{font-size:13.5px;color:var(--on-olive-2)}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.5}
+.consent input{width:20px;height:20px;flex:0 0 auto;margin-top:2px}
+.err{color:#FFB4A2;font-size:14px;display:none}
+.err.on{display:block}
+.form-done{display:none;padding:22px;border-radius:var(--r);background:rgba(250,250,249,.08);border:1px solid var(--on-olive-line)}
+.form-done.on{display:block}
+
+.other{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
+.other a{display:block;padding:22px;border-radius:var(--r);text-decoration:none;
+  background:var(--paper);border:1px solid var(--on-paper-line);
+  transition:transform .4s var(--e-ui),box-shadow .4s var(--e-ui)}
+.other a:hover{transform:translateY(-3px);box-shadow:var(--shadow-olive)}
+.other .who{font-size:14px;color:var(--on-paper-2)}
+.other h3{font-size:21px;margin-top:.25rem}
+
+footer{background:var(--ink);color:rgba(250,250,249,.72);padding:56px 0 40px;font-size:15px}
+footer a{color:rgba(250,250,249,.9)}
+
+@media (max-width:860px){
+  body{font-size:16.5px}
+  .page-hero{grid-template-columns:1fr}
+  .other{grid-template-columns:1fr}
+  .topbar .row{height:60px}
+  .topbar .brand{font-size:16px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}

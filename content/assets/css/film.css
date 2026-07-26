@@ -1,0 +1,87 @@
+/* Стили только главной: кино-сцена, развилка оснований, шаги, честный блок. */
+
+#film{position:relative;background:var(--olive-deep);color:var(--on-olive-1)}
+.film-pin{position:relative;height:100svh;overflow:hidden;display:grid;place-items:center}
+.film-stage{position:relative;width:min(100%,1320px);margin-inline:auto;padding:0 clamp(1rem,3.4vw,58px)}
+#seq{width:100%;height:auto;border-radius:var(--r);background:var(--olive-deep);
+  box-shadow:0 30px 80px rgba(0,0,0,.34)}
+.film-note{margin-top:10px;font-size:12.5px;color:var(--on-olive-2);
+  letter-spacing:.01em;text-align:right;max-width:none}
+
+/* оверлей привязан к кадру, а не к вьюпорту: иначе плашка вылезает за картинку */
+.film-overlay{position:absolute;inset:0 1rem;pointer-events:none}
+.beat{position:absolute;left:clamp(14px,3.5%,44px);bottom:clamp(52px,9%,84px);
+  width:min(620px,76%);opacity:0;transform:translateY(24px);
+  transition:opacity .5s var(--e-enter),transform .5s var(--e-enter);text-align:left}
+.beat.on{opacity:1;transform:none}
+.beat .plate{background:linear-gradient(100deg,rgba(10,10,10,.78),rgba(10,10,10,.34) 78%,transparent);
+  padding:26px 34px 28px;border-radius:var(--r);backdrop-filter:blur(2px)}
+.beat h1,.beat h2,.beat h3{color:#fafaf9}
+.beat p{color:rgba(250,250,249,.84);margin-top:.6rem}
+.beat .step-no{font-family:'Onest',sans-serif;font-weight:700;
+  font-size:clamp(36px,4vw,60px);line-height:1;color:var(--brick-hi);letter-spacing:-.03em}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;pointer-events:auto}
+
+/* рельс живёт в поле слева от кадра, а не поверх картинки */
+.rail{position:absolute;left:clamp(4px,1.1vw,20px);top:16%;height:62%;width:2px;
+  background:var(--on-olive-line);pointer-events:none}
+.rail i{position:absolute;left:-5px;width:12px;height:12px;border-radius:50%;
+  background:var(--olive-deep);border:2px solid var(--on-olive-line);
+  transition:background-color .4s var(--e-ui),border-color .4s var(--e-ui),transform .4s var(--e-ui)}
+.rail i.on{background:var(--brick-hi);border-color:var(--brick-hi);transform:scale(1.35)}
+
+.sticky-cta{position:fixed;right:16px;z-index:50;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:opacity .4s var(--e-ui),transform .4s var(--e-ui)}
+.sticky-cta.on{opacity:1;transform:none;pointer-events:auto}
+
+/* 4 карточки = ровно 4 клетки, все с описанием: пустая клетка или пустая
+   карточка это дыра в сетке, а не композиция */
+.paths{display:grid;gap:14px;grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr}
+.path{display:flex;flex-direction:column;justify-content:space-between;gap:14px;
+  text-decoration:none;padding:30px 28px 26px;border-radius:var(--r);
+  background:var(--paper);border:1px solid var(--on-paper-line);
+  transition:transform .4s var(--e-ui),box-shadow .4s var(--e-ui),border-color .4s var(--e-ui)}
+.path:hover{transform:translateY(-4px);box-shadow:var(--shadow-olive);border-color:rgba(59,74,47,.35)}
+.path .who{font-size:15px;color:var(--on-paper-2)}
+.path h3{margin:.3rem 0 .45rem}
+.path .desc{font-size:15.5px;color:var(--on-paper-2)}
+.path .go{font-weight:600;color:var(--brick-text);font-size:16px}
+.path:hover .go{color:var(--brick)}
+.path.tall{background:var(--sand)}
+
+/* шаги в две колонки: вертикальная простыня из четырёх строк оставляла
+   правую половину экрана пустой и делала ритм монотонным */
+.steps{display:grid;gap:0 clamp(28px,4vw,60px);grid-template-columns:repeat(2,1fr)}
+@media (max-width:860px){ .steps{grid-template-columns:1fr} }
+.step{display:grid;grid-template-columns:auto 1fr;gap:clamp(18px,3vw,44px);
+  padding:30px 0;border-top:1px solid var(--on-olive-line)}
+.step:last-child{border-bottom:1px solid var(--on-olive-line)}
+.step .n{font-family:'Onest',sans-serif;font-weight:700;font-size:clamp(28px,3vw,42px);
+  line-height:1;color:rgba(250,250,249,.34);letter-spacing:-.03em}
+
+.honest{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.honest div{padding:24px;border-radius:var(--r);background:rgba(250,250,249,.05);
+  border:1px solid var(--on-olive-line)}
+.honest h3{font-size:20px;margin-bottom:.4rem}
+
+@media (max-width:860px){
+  .paths{grid-template-columns:1fr}
+  .rail{display:none}
+  .beat .plate{padding:18px 20px 20px}
+  /* кадр заполняет экран: cover обрезает бока, но сцена перестаёт болтаться
+     в пустоте посреди вьюпорта */
+  #seq{width:100%;height:74svh;object-fit:cover}
+  .film-stage{padding:0 12px;width:100%}
+  .beat{left:12px;right:12px;width:auto;bottom:clamp(46px,7%,70px)}
+  .film-note{font-size:11.5px;text-align:left}
+  .hero-cta{gap:10px}
+  .hero-cta .btn{flex:1 1 auto;padding:14px 18px;font-size:15px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .beat{opacity:1;transform:none;position:static;max-width:none;width:auto;margin:0 0 20px}
+  .film-pin{height:auto;display:block;padding:40px 0}
+  .film-overlay{position:static;display:block;padding:0}
+}
