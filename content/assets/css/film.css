@@ -26,11 +26,27 @@
 /* оверлей держит колонку контента: на широком экране прижатый к кромке
    заголовок выглядит случайным */
 .film-overlay{position:absolute;inset:0;align-content:end;
-  padding-bottom:clamp(64px,11vh,120px);pointer-events:none}
-.film-overlay .plate{max-width:min(660px,88%);pointer-events:auto}
-.film-overlay h1{color:#fafaf9}
-.film-overlay .lead{margin-top:.7rem}
-.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;pointer-events:auto}
+  padding-bottom:clamp(56px,9vh,96px);pointer-events:none}
+
+/* Плашки лежат стопкой в одной точке и сменяют друг друга. Высоту задаёт
+   самая высокая: без фиксированной высоты кнопки под ними прыгали бы вверх
+   и вниз на каждой смене подписи. */
+.beats{position:relative;min-height:clamp(190px,26vh,250px)}
+.beat{position:absolute;left:0;right:0;bottom:0;opacity:0;
+  transform:translateY(14px);pointer-events:none;
+  transition:opacity .55s var(--e-enter),transform .55s var(--e-enter)}
+.beat.on{opacity:1;transform:none}
+.beat .plate{max-width:min(660px,92%)}
+.beat h1,.beat h2{color:#fafaf9}
+.beat h1{font-size:clamp(30px,4.4vw,58px)}
+.beat h2{font-size:clamp(24px,2.7vw,38px)}
+.beat p{color:rgba(250,250,249,.86);margin-top:.6rem;max-width:52ch}
+.beat .step-no{font-family:'Onest',sans-serif;font-weight:700;
+  font-size:clamp(30px,3.4vw,48px);line-height:1;color:var(--brick-hi);
+  letter-spacing:-.03em;margin-bottom:.2rem}
+
+/* кнопки стоят всегда: подписи сменяются, действие остаётся на месте */
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;pointer-events:auto}
 
 
 /* 4 карточки = ровно 4 клетки, все с описанием: пустая клетка или пустая

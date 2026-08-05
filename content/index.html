@@ -56,16 +56,65 @@
       aria-label="Спуск с высоты: облака, море, побережье и вода у берега"></video>
     <div class="film-shade" aria-hidden="true"></div>
 
+    <!-- Плашки сменяются по ходу видео, а не по прокрутке. Прокрутка сцену
+         больше не трогает и страницу не держит: видео идёт по кругу само,
+         подписи идут за ним. Кнопки вынесены из плашек и стоят всегда, иначе
+         на девять секунд из десяти на первом экране не было бы CTA. -->
     <div class="film-overlay grid">
-      <div class="plate">
-        <!-- неразрывные пробелы: перенос должен идти «Вид на жительство /
-             Кипра», а не оставлять висячее «на» в конце строки -->
-        <h1>Вид&nbsp;на&nbsp;жительство Кипра</h1>
-        <p class="lead" style="color:rgba(250,250,249,.88)">Разберу вашу ситуацию, подберу основание и доведу до решения миграционной службы.</p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="#zapis" style="background:var(--brick)">Записаться на разбор</a>
-          <a class="btn btn-ghost" href="#osnovaniya" style="border-color:rgba(250,250,249,.34);color:#fafaf9">С чего начать</a>
+      <div class="beats">
+        <div class="beat on" data-at="0">
+          <div class="plate">
+            <!-- неразрывные пробелы: перенос должен идти «Вид на жительство /
+                 Кипра», а не оставлять висячее «на» в конце строки -->
+            <h1>Вид&nbsp;на&nbsp;жительство Кипра</h1>
+            <p class="lead" style="color:rgba(250,250,249,.88)">Разберу вашу ситуацию, подберу основание и доведу до решения миграционной службы.</p>
+          </div>
         </div>
+        <div class="beat" data-at="0.25">
+          <div class="plate">
+            <h2>Кипр входит в ЕС</h2>
+            <p>Республика Кипр состоит в Европейском союзе с 2004 года. Легальный статус здесь дают по нескольким основаниям, и они не взаимозаменяемы.</p>
+          </div>
+        </div>
+        <div class="beat" data-at="0.37">
+          <div class="plate">
+            <div class="step-no">01</div>
+            <h2>Разбор</h2>
+            <p>Смотрим доход, семью, работу и планы. Определяем, какое основание ваше, а какое не пройдёт.</p>
+          </div>
+        </div>
+        <div class="beat" data-at="0.49">
+          <div class="plate">
+            <div class="step-no">02</div>
+            <h2>Документы</h2>
+            <p>Собираем пакет: подтверждение дохода, страховка, справки, переводы. Здесь теряют больше всего времени.</p>
+          </div>
+        </div>
+        <div class="beat" data-at="0.61">
+          <div class="plate">
+            <div class="step-no">03</div>
+            <h2>Подача</h2>
+            <p>Запись, биометрия, подача. Дальше ожидание, и сроки зависят не от меня, а от органа.</p>
+          </div>
+        </div>
+        <div class="beat" data-at="0.73">
+          <div class="plate">
+            <div class="step-no">04</div>
+            <h2>Решение</h2>
+            <p>Карта резидента либо отказ с указанием причины. Оба исхода штатные, и ко второму тоже нужно быть готовым.</p>
+          </div>
+        </div>
+        <div class="beat" data-at="0.87">
+          <div class="plate">
+            <h2>Отказ не приговор</h2>
+            <p>У отказа всегда есть причина, и почти всегда есть следующий шаг. Разберём вашу ситуацию до того, как вы потратите деньги.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#zapis" style="background:var(--brick)">Записаться на разбор</a>
+        <a class="btn btn-ghost" href="#osnovaniya" style="border-color:rgba(250,250,249,.34);color:#fafaf9">С чего начать</a>
       </div>
     </div>
 
@@ -81,9 +130,6 @@
     <p class="eyebrow">Четыре основания</p>
     <h2>Найдите свой случай</h2>
   </div>
-  <!-- текст переехал из снятого блока кино-сцены: он единственный объяснял,
-       почему речь про Кипр вообще идёт как про ЕС -->
-  <p class="lead" style="margin-bottom:18px">Республика Кипр состоит в Европейском союзе с 2004 года. Легальный статус здесь дают по нескольким основаниям, и они не взаимозаменяемы.</p>
   <p class="lead" style="margin-bottom:34px">Процедуры отличаются сильно. Универсального пути нет, и первое, что стоит сделать, это понять, какой из них ваш.</p>
 
   <div class="paths">
@@ -185,8 +231,6 @@
     <div class="honest-intro">
       <div class="head-wrap"><h2>Когда отказывают</h2></div>
       <p style="margin-bottom:24px">Отказ в миграции штатный исход, а не редкость. Вот частые причины и что я с ними делаю.</p>
-      <!-- переехало из снятого блока кино-сцены -->
-      <p style="margin-bottom:24px">У отказа всегда есть причина, и почти всегда есть следующий шаг. Разберём вашу ситуацию до того, как вы потратите деньги.</p>
       <p><strong style="color:#fafaf9">Чего я не делаю:</strong> не обещаю одобрение, не называю сроки решения органа как гарантию, не работаю с поддельными документами и не беру денег за результат, на который не влияю.</p>
     </div>
 
@@ -388,6 +432,37 @@
       if (video.paused) tryPlay();
     }, {passive:true});
   });
+
+  /* Подписи идут за видео, а не за прокруткой.
+     Прокрутка сцену не трогает вообще: страница листается свободно, а плашки
+     сменяются по времени ролика. Порог берём по доле длительности, чтобы
+     тайминги пережили пересборку видео другой длины. */
+  var beats = Array.prototype.slice.call(document.querySelectorAll('.beat'));
+  if (beats.length){
+    var thresholds = beats.map(function(b){ return parseFloat(b.getAttribute('data-at')) || 0; });
+    var shown = -1;
+    var beatRaf = 0;
+    function syncBeats(){
+      beatRaf = 0;
+      var d = video.duration;
+      if (d){
+        var p = video.currentTime / d;
+        var i = 0;
+        for (var k = 0; k < thresholds.length; k++) if (p >= thresholds[k] - 0.002) i = k;
+        if (i !== shown){
+          if (shown >= 0) beats[shown].classList.remove('on');
+          beats[i].classList.add('on');
+          shown = i;
+        }
+      }
+    }
+    // timeupdate приходит 4 раза в секунду, этого хватает для смены подписи
+    // и не стоит кадра анимации, в отличие от постоянного requestAnimationFrame
+    video.addEventListener('timeupdate', function(){
+      if (!beatRaf) beatRaf = requestAnimationFrame(syncBeats);
+    });
+    video.addEventListener('seeked', syncBeats);
+  }
 
   // за экраном крутить нечего: экономим батарею на телефоне
   if ('IntersectionObserver' in window){
