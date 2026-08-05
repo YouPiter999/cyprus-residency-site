@@ -1,55 +1,37 @@
 /* Стили только главной: кино-сцена, развилка оснований, шаги, честный блок. */
 
 #film{position:relative;background:var(--olive-deep);color:var(--on-olive-1)}
-.film-pin{position:relative;height:100svh;overflow:hidden;display:grid;place-items:center}
-/* Сцена занимает весь экран, а не лежит карточкой посреди оливкового поля.
-   В прежней раскладке на первом экране оставалось около 340px мёртвого фона
-   сверху и снизу, и кино читалось иллюстрацией к пустоте. */
-.film-stage{position:relative;width:100%;height:100%}
-#seq{width:100%;height:100%;object-fit:cover;background:var(--olive-deep);
-  border-radius:0}
+
+/* Первый экран: видео фоном, текст поверх.
+   Высота намеренно меньше экрана. Ровно 100svh не оставляет ни намёка, что
+   ниже что-то есть, а сцена больше не держит прокрутку и обязана отпускать
+   взгляд дальше. */
+.film-hero{position:relative;height:min(86svh,780px);overflow:hidden}
+#seq{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  background:var(--olive-deep)}
+/* затемнение снизу: белый текст поверх облаков иначе не держит контраст */
+.film-shade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(10,10,10,.72) 0%,
+    rgba(10,10,10,.42) 34%,rgba(10,10,10,.10) 62%,rgba(10,10,10,0) 100%)}
+
 /* Подпись поверх кадра, в углу. Тень не спасала: 12px при непрозрачности
    0.62 поверх бирюзовой воды пропадали совсем, а это единственное место,
    где сказано, что картинка нарисована. Подложка обязательна. */
 .film-note{position:absolute;right:clamp(12px,2vw,26px);bottom:12px;margin:0;
   font-size:13px;color:rgba(250,250,249,.92);letter-spacing:.01em;
-  text-align:right;max-width:none;
+  text-align:right;max-width:none;z-index:2;
   padding:5px 10px;border-radius:8px;background:rgba(10,10,10,.42);
   backdrop-filter:blur(3px)}
 
-/* оверлей привязан к кадру, который теперь во весь экран */
-.film-overlay{position:absolute;inset:0;pointer-events:none}
-/* текст держится колонки контента, а не края монитора: на широком экране
-   прижатая к кромке плашка выглядит случайной */
-.beat{position:absolute;left:max(clamp(16px,4vw,58px), calc((100vw - 1240px) / 2));
-  bottom:clamp(60px,10vh,110px);
-  width:min(620px,76%);opacity:0;transform:translateY(24px);
-  transition:opacity .5s var(--e-enter),transform .5s var(--e-enter);text-align:left}
-.beat.on{opacity:1;transform:none}
-/* затухание растянуто: при обрыве на 78% справа была видна жёсткая
-   вертикальная граница плашки поверх картинки */
-.beat .plate{background:linear-gradient(100deg,rgba(10,10,10,.80) 0%,
-    rgba(10,10,10,.62) 46%,rgba(10,10,10,.28) 78%,rgba(10,10,10,0) 100%);
-  padding:26px 34px 28px;border-radius:var(--r);backdrop-filter:blur(2px)}
-.beat h1,.beat h2,.beat h3{color:#fafaf9}
-/* общая шкала подняла h1 до 68px, но плашка сцены шириной 620px: там такой
-   кегль рвёт «Вид на жительство Кипра» на три строки поверх картинки */
-.beat h1{font-size:clamp(30px,3.6vw,54px)}
-.beat h2{font-size:clamp(26px,2.9vw,40px)}
-.beat p{color:rgba(250,250,249,.84);margin-top:.6rem}
-.beat .step-no{font-family:'Onest',sans-serif;font-weight:700;
-  font-size:clamp(36px,4vw,60px);line-height:1;color:var(--brick-hi);letter-spacing:-.03em}
-.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;pointer-events:auto}
+/* оверлей держит колонку контента: на широком экране прижатый к кромке
+   заголовок выглядит случайным */
+.film-overlay{position:absolute;inset:0;align-content:end;
+  padding-bottom:clamp(64px,11vh,120px);pointer-events:none}
+.film-overlay .plate{max-width:min(660px,88%);pointer-events:auto}
+.film-overlay h1{color:#fafaf9}
+.film-overlay .lead{margin-top:.7rem}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;pointer-events:auto}
 
-/* Рельс был решением для старой раскладки, где кадр лежал карточкой и слева
-   оставалось пустое поле. Сцена теперь во весь экран, и рельс оказался
-   четырьмя точками поверх облаков у самой кромки монитора: декор, который
-   ничего не объясняет. Разметка оставлена, чтобы не трогать скрипт. */
-.rail{display:none}
-.rail i{position:absolute;left:-5px;width:12px;height:12px;border-radius:50%;
-  background:var(--olive-deep);border:2px solid var(--on-olive-line);
-  transition:background-color .4s var(--e-ui),border-color .4s var(--e-ui),transform .4s var(--e-ui)}
-.rail i.on{background:var(--brick-hi);border-color:var(--brick-hi);transform:scale(1.35)}
 
 /* 4 карточки = ровно 4 клетки, все с описанием: пустая клетка или пустая
    карточка это дыра в сетке, а не композиция.
@@ -92,7 +74,6 @@
 /* заголовок шага и абзац стояли в двух пикселях друг от друга и слипались */
 .step h3{margin-bottom:9px}
 
-.honest{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 /* ── налипающие карточки ──────────────────────────────
    Каждая карточка липнет на своей высоте, следующая наезжает сверху, а
    предыдущая отъезжает вглубь через scale. Масштаб гоняет ScrollTrigger,
@@ -136,13 +117,13 @@
    когда все карточки разом упрутся в дно. */
 .stack-card:last-child{margin-bottom:0}
 
-/* На телефоне налипания нет. Ход прокрутки между карточками занимал там
-   четверть экрана, и слепой судья прочитал эти провалы как несработавшую
-   загрузку, а не как приём. На узком экране эффект и так почти не читается:
-   карточка занимает почти всю высоту, отъезжать ей некуда. */
+/* На телефоне налипание есть, но ход втрое короче. Полный десктопный ход
+   занимал там четверть экрана, и провалы между карточками читались
+   несработавшей загрузкой. Короткий ход даёт тот же эффект без дыр:
+   следующая карточка наезжает почти сразу за предыдущей. */
 @media (max-width:860px){
-  .stack{--stack-top:84px;padding-bottom:0;display:grid;gap:14px}
-  .stack-card{position:static;margin-bottom:0;transform:none !important}
+  .stack{--stack-top:80px;padding-bottom:clamp(70px,10vh,110px)}
+  .stack-card{margin-bottom:clamp(64px,9vh,90px);min-height:clamp(190px,24vh,230px)}
 }
 
 /* без анимации стопка не нужна: липкие блоки без масштаба просто наезжают
@@ -153,24 +134,11 @@
 
 @media (max-width:860px){
   .paths{grid-template-columns:1fr}
-  .rail{display:none}
-  .beat .plate{padding:18px 20px 20px}
-  /* кадр заполняет экран: cover обрезает бока, но сцена перестаёт болтаться
-     в пустоте посреди вьюпорта. aspect-ratio снимаем, иначе он спорит
-     с фиксированной высотой */
-  /* на всю ширину и высоту пина: боковые отступы читались не приёмом,
-     а незакрытой рамкой вокруг видео */
-  #seq{width:100%;height:100%;aspect-ratio:auto;object-fit:cover}
-  .film-stage{padding:0;width:100%;height:100%}
-  .beat{left:12px;right:12px;width:auto;bottom:clamp(46px,7%,70px)}
-  .film-note{font-size:11.5px;text-align:left}
+  .film-hero{height:min(78svh,640px)}
+  .film-overlay{padding-bottom:clamp(48px,8vh,80px)}
+  .film-overlay .plate{max-width:none}
+  .film-note{font-size:11.5px;padding:4px 8px}
   /* обе кнопки одной ширины: 232 против 196 читалось небрежностью */
   .hero-cta{gap:10px;flex-direction:column;align-items:stretch}
   .hero-cta .btn{width:100%;padding:14px 18px;font-size:15px}
-}
-
-@media (prefers-reduced-motion:reduce){
-  .beat{opacity:1;transform:none;position:static;max-width:none;width:auto;margin:0 0 20px}
-  .film-pin{height:auto;display:block;padding:40px 0}
-  .film-overlay{position:static;display:block;padding:0}
 }

@@ -41,87 +41,35 @@
 </header>
 
 <main>
+<!-- Первый экран. Закрепления и перемотки прокруткой здесь больше нет.
+     Сцена собрана из девяти нарисованных картинок: между ними нет
+     непрерывного движения, только наезд внутри кадра и растворение на стыке,
+     поэтому под управлением прокрутки она читалась слайдшоу, а сама
+     прокрутка залипала на три экрана. Теперь это просто фон: видео идёт
+     по кругу само, заголовок стоит на месте, страница листается сразу.
+     Шаги 01-04, которые раньше пролетали поверх кадров, никуда не делись:
+     они дословно повторяли секцию «Как проходит работа» ниже. -->
 <section id="film" class="grid" style="padding:0">
-  <div class="full film-pin" id="filmPin">
-    <div class="film-stage">
-      <!-- Видео, а не секвенция картинок. Секвенция шла 12 кадров в секунду
-           и на автопрогоне читалась рывками; здесь движение посчитано честно
-           при 30 fps, а проигрывание идёт аппаратно. Источник подставляет
-           скрипт: мобильный файл вертикальный и вчетверо легче, грузить оба
-           незачем. -->
-      <video id="seq" width="960" height="400" muted playsinline preload="auto"
-        disablepictureinpicture poster="assets/film/frames/f_001.avif"
-        aria-label="Спуск с высоты: облака, море, остров Кипр, побережье, город, пляж и вода у берега"></video>
-      <p class="film-note">Иллюстрация. Сцена нарисована, это не фотосъёмка Кипра.</p>
+  <div class="full film-hero">
+    <video id="seq" muted playsinline loop autoplay preload="auto"
+      disablepictureinpicture poster="assets/film/frames/f_001.avif"
+      aria-label="Спуск с высоты: облака, море, побережье и вода у берега"></video>
+    <div class="film-shade" aria-hidden="true"></div>
 
-    <div class="rail" id="rail" aria-hidden="true">
-      <i style="top:0%"></i><i style="top:33%"></i><i style="top:66%"></i><i style="top:100%"></i>
-    </div>
-
-    <div class="film-overlay">
-      <div class="beat on" data-at="0" id="beat1">
-        <div class="plate">
-          <!-- неразрывные пробелы: перенос должен идти «Вид на жительство /
-               Кипра», а не оставлять висячее «на» в конце строки -->
-          <h1>Вид&nbsp;на&nbsp;жительство Кипра</h1>
-          <p class="lead" style="color:rgba(250,250,249,.86)">Разберу вашу ситуацию, подберу основание и доведу до решения миграционной службы.</p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="#zapis" style="background:var(--brick)">Записаться на разбор</a>
-            <a class="btn btn-ghost" href="#osnovaniya" style="border-color:rgba(250,250,249,.3);color:#fafaf9">С чего начать</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="beat" data-at="0.30">
-        <div class="plate">
-          <h2>Кипр входит в ЕС</h2>
-          <p>Республика Кипр состоит в Европейском союзе с 2004 года. Легальный статус здесь дают по нескольким основаниям, и они не взаимозаменяемы.</p>
-        </div>
-      </div>
-
-      <div class="beat" data-at="0.44">
-        <div class="plate">
-          <div class="step-no">01</div>
-          <h2>Разбор</h2>
-          <p>Смотрим доход, семью, работу и планы. Определяем, какое основание ваше, а какое не пройдёт.</p>
-        </div>
-      </div>
-
-      <div class="beat" data-at="0.58">
-        <div class="plate">
-          <div class="step-no">02</div>
-          <h2>Документы</h2>
-          <p>Собираем пакет: подтверждение дохода, страховка, справки, переводы. Здесь теряют больше всего времени.</p>
-        </div>
-      </div>
-
-      <div class="beat" data-at="0.72">
-        <div class="plate">
-          <div class="step-no">03</div>
-          <h2>Подача</h2>
-          <p>Запись, биометрия, подача. Дальше ожидание, и сроки зависят не от меня, а от органа.</p>
-        </div>
-      </div>
-
-      <div class="beat" data-at="0.86">
-        <div class="plate">
-          <div class="step-no">04</div>
-          <h2>Решение</h2>
-          <p>Карта резидента либо отказ с указанием причины. Оба исхода штатные, и ко второму тоже нужно быть готовым.</p>
-        </div>
-      </div>
-
-      <div class="beat" data-at="0.95">
-        <div class="plate">
-          <h2>Отказ не приговор</h2>
-          <p>У отказа всегда есть причина, и почти всегда есть следующий шаг. Разберём вашу ситуацию до того, как вы потратите деньги.</p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="#zapis" style="background:var(--brick)">Записаться на разбор</a>
-          </div>
+    <div class="film-overlay grid">
+      <div class="plate">
+        <!-- неразрывные пробелы: перенос должен идти «Вид на жительство /
+             Кипра», а не оставлять висячее «на» в конце строки -->
+        <h1>Вид&nbsp;на&nbsp;жительство Кипра</h1>
+        <p class="lead" style="color:rgba(250,250,249,.88)">Разберу вашу ситуацию, подберу основание и доведу до решения миграционной службы.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#zapis" style="background:var(--brick)">Записаться на разбор</a>
+          <a class="btn btn-ghost" href="#osnovaniya" style="border-color:rgba(250,250,249,.34);color:#fafaf9">С чего начать</a>
         </div>
       </div>
     </div>
-    </div>
+
+    <p class="film-note">Иллюстрация. Сцена нарисована, это не фотосъёмка Кипра.</p>
   </div>
 </section>
 
@@ -133,6 +81,9 @@
     <p class="eyebrow">Четыре основания</p>
     <h2>Найдите свой случай</h2>
   </div>
+  <!-- текст переехал из снятого блока кино-сцены: он единственный объяснял,
+       почему речь про Кипр вообще идёт как про ЕС -->
+  <p class="lead" style="margin-bottom:18px">Республика Кипр состоит в Европейском союзе с 2004 года. Легальный статус здесь дают по нескольким основаниям, и они не взаимозаменяемы.</p>
   <p class="lead" style="margin-bottom:34px">Процедуры отличаются сильно. Универсального пути нет, и первое, что стоит сделать, это понять, какой из них ваш.</p>
 
   <div class="paths">
@@ -234,6 +185,8 @@
     <div class="honest-intro">
       <div class="head-wrap"><h2>Когда отказывают</h2></div>
       <p style="margin-bottom:24px">Отказ в миграции штатный исход, а не редкость. Вот частые причины и что я с ними делаю.</p>
+      <!-- переехало из снятого блока кино-сцены -->
+      <p style="margin-bottom:24px">У отказа всегда есть причина, и почти всегда есть следующий шаг. Разберём вашу ситуацию до того, как вы потратите деньги.</p>
       <p><strong style="color:#fafaf9">Чего я не делаю:</strong> не обещаю одобрение, не называю сроки решения органа как гарантию, не работаю с поддельными документами и не беру денег за результат, на который не влияю.</p>
     </div>
 
@@ -387,237 +340,48 @@
 <script>
 (function(){
   'use strict';
+  /* Первый экран: видео крутится фоном, и это всё.
+
+     Здесь раньше жили закрепление сцены, перемотка по прокрутке, автопрогон
+     с передачей управления и слежение за текстовыми блоками. Всё это снято
+     вместе с самим приёмом: сцена из девяти нарисованных кадров под
+     управлением прокрутки читалась перелистыванием картинок, а страница
+     залипала на три экрана.
+
+     Осталась одна забота: не гонять видео там, где оно не нужно или
+     не приветствуется. */
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var saveData = (navigator.connection && navigator.connection.saveData) === true;
   var lowEnd = (navigator.deviceMemory && navigator.deviceMemory <= 4) || matchMedia('(pointer: coarse)').matches;
-
   var video = document.getElementById('seq');
-  var pin = document.getElementById('filmPin');
-  var beats = Array.prototype.slice.call(document.querySelectorAll('.beat'));
-  var railDots = Array.prototype.slice.call(document.querySelectorAll('.rail i'));
-
-  // мобильный файл вертикальный и вчетверо легче: широкий кроп на телефоне
-  // вырождается в полоску, а десктопный вес по мобильной сети не оправдан
-  var MOB = lowEnd || innerWidth < 860;
-
-  // беаты и рельс живут отдельно от картинки: их гоняет и скролл, и видео
-  function marks(p){
-    for (var k=0;k<beats.length;k++){
-      var at = parseFloat(beats[k].getAttribute('data-at'));
-      var nextAt = (k+1 < beats.length) ? parseFloat(beats[k+1].getAttribute('data-at')) : 1.01;
-      beats[k].classList.toggle('on', p >= at - 0.005 && p < nextAt - 0.005);
-    }
-    var rail = [0.33,0.50,0.66,0.82];
-    for (var m=0;m<railDots.length;m++){
-      railDots[m].classList.toggle('on', p >= rail[m] - 0.005);
-    }
-  }
+  if (!video) return;
 
   if (reduce || saveData){
-    // видео не грузим вовсе: остаётся постер, а весь текст показываем сразу.
-    // Закреплённая сцена без движения хуже, чем её отсутствие
+    // остаётся постер: движение выключено в системе либо человек экономит трафик
+    video.removeAttribute('autoplay');
     video.removeAttribute('preload');
-    document.getElementById('rail').style.display = 'none';
-    beats.forEach(function(b){ b.classList.add('on'); });
     return;
   }
 
-  // постер тоже свой: горизонтальный кадр на телефоне лёг бы полоской поперёк
-  // вертикального видео и мигнул бы при первом кадре
+  // мобильный файл вертикальный и вчетверо легче десктопного
+  var MOB = lowEnd || innerWidth < 860;
   video.poster = MOB ? 'assets/film/frames-m/f_001.avif' : 'assets/film/frames/f_001.avif';
   video.src = MOB ? 'assets/film/cyprus-descent-m.mp4' : 'assets/film/cyprus-descent.mp4';
   video.load();
 
-  /* Длительность нужна для перемотки прокруткой.
+  var play = video.play();
+  // автовоспроизведение могут запретить: тогда остаётся постер, и это нормально
+  if (play && play.catch) play.catch(function(){});
 
-     Одного обработчика мало: когда файл лежит в кэше, метаданные успевают
-     приехать раньше, чем мы подпишемся, событие уже не повторится, и DUR
-     навсегда остаётся нулём. Внешне это выглядит так, будто сцена не
-     реагирует на прокрутку вовсе, хотя автопрогон при этом работает: ему
-     длительность не нужна. Поэтому подписка плюс проверка готовности. */
-  var DUR = 0;
-  function readDuration(){
-    if (!DUR && video.readyState >= 1 && video.duration) DUR = video.duration;
-    return DUR;
+  // за экраном крутить нечего: экономим батарею на телефоне
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { var pr = video.play(); if (pr && pr.catch) pr.catch(function(){}); }
+        else video.pause();
+      });
+    }, {threshold: 0.05}).observe(video);
   }
-  video.addEventListener('loadedmetadata', readDuration);
-  video.addEventListener('durationchange', readDuration);
-  readDuration();
-
-  /* Перемотка по прокрутке.
-     currentTime присваиваем не чаще одного раза на кадр экрана: браузер
-     обрабатывает каждую перемотку асинхронно, и очередь из десятка запросов
-     за кадр он разгребает рывками. Копим желаемое время, ставим последнее. */
-  var wanted = -1, seekRaf = 0;
-  function applySeek(){
-    seekRaf = 0;
-    if (wanted < 0 || !DUR) return;
-    // мельче четверти кадра двигать нечего: 30 fps это 33мс на кадр
-    if (Math.abs(video.currentTime - wanted) > 0.008) video.currentTime = wanted;
-  }
-  function seek(t){
-    if (!readDuration()) return;      // метаданные ещё не приехали
-    wanted = Math.max(0, Math.min(DUR - 0.001, t));
-    if (!seekRaf) seekRaf = requestAnimationFrame(applySeek);
-  }
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  // компромисс: 3.6 экрана читались как топтание, но при 2.7 семь текстовых
-  // блоков пролетают быстрее, чем их успеваешь прочесть. 3.2 держит и то, и то
-  var PIN_VH = MOB ? 260 : 320;
-
-  var st = ScrollTrigger.create({
-    trigger: pin,
-    start: 'top top',
-    end: '+=' + (PIN_VH - 100) + '%',
-    pin: true,
-    pinSpacing: true,
-    scrub: MOB ? 0.5 : 0.35,
-    onUpdate: function(self){
-      if (auto.on) return;          // во время автопрогона скролл не командует
-      seek(self.progress * readDuration());
-      marks(self.progress);
-    }
-  });
-
-  /* ── Автопрогон сцены ─────────────────────────────────────────────
-     Если посетитель ничего не делает 1.8 секунды, сцена играет сама: иначе
-     человек видит неподвижный кадр и не догадывается, что здесь есть кино.
-
-     Прогон это обычный play(), а не покадровая отрисовка. Ровно поэтому мы
-     и ушли от секвенции: проигрывание видео идёт мимо основного потока, и
-     ни загрузка страницы, ни сборщик мусора его не дёргают.
-
-     Передача управления сделана через синхронизацию скролла. При первом же
-     действии позиция страницы встаёт ровно туда, где сейчас видео. Сцена
-     закреплена, поэтому переход не виден вообще: кадр и текст уже нужные,
-     меняется только число в scrollY.
-
-     Границы берём у самого ScrollTrigger: у закреплённого элемента
-     getBoundingClientRect отдаёт координаты fixed-позиции, и считать
-     диапазон по нему бессмысленно. */
-  /* Браузер возвращает прежнюю позицию прокрутки при обновлении страницы,
-     и сцена оказывалась уже пролистанной: автопрогон видел scrollY больше
-     нуля и молча отменялся. Для страницы, которая начинается с закреплённого
-     кино, правильнее всегда начинать сначала. */
-  // ставим повторно: ScrollTrigger при создании закрепления возвращает 'auto',
-  // и одной установки в начале не хватает
-  function noRestore(){
-    try { if (history.scrollRestoration) history.scrollRestoration = 'manual'; } catch (e) {}
-  }
-  noRestore();
-  addEventListener('load', noRestore);
-
-  // manual действует со следующей загрузки, а эту браузер мог восстановить
-  // до нашего скрипта. Возвращаем сами, но только если человек не пришёл
-  // по якорю: сбросить его с #zapis обратно наверх было бы хамством
-  try {
-    var nav = performance.getEntriesByType('navigation')[0];
-    if (!location.hash && scrollY > 4 && (!nav || nav.type !== 'back_forward')){
-      scrollTo(0, 0);
-    }
-  } catch (e) {}
-
-  var auto = {on:false, raf:0, timer:0};
-  var AUTO_DELAY = 1800;
-  var AUTO_WAIT_MAX = 6000;         // на медленной сети не ждём вечно
-  var STOPPERS = ['wheel','touchstart','pointerdown','keydown','scroll'];
-  var waitedFrom = 0;
-
-  function progressNow(){
-    var d = readDuration();
-    return d ? Math.min(1, video.currentTime / d) : 0;
-  }
-
-  /* Пока видео играет, беаты ведём от него же: единственный источник времени.
-
-     По окончании возвращаем сцену в начало. Прогон доигрывал до последнего
-     беата и оставлял первый экран с надписью «Отказ не приговор»: человек,
-     который просто открыл страницу и отвлёкся на десять секунд, возвращался
-     к сайту без названия услуги и без кнопки. Заодно это чинит рассинхрон:
-     страница всё это время стоит на нуле, поэтому вернуть сцену на нулевой
-     кадр честнее, чем телепортировать полосу прокрутки на пятую часть
-     документа при первом же движении колеса. */
-  function follow(){
-    if (!auto.on) return;
-    marks(progressNow());
-    if (video.ended){
-      auto.on = false;
-      // Возврат к началу через затемнение. Без него пляж последнего кадра
-      // мгновенно сменялся облаками первого: срез посреди спокойной сцены
-      // читался как сбой, а не как приём.
-      video.style.transition = 'opacity .34s var(--e-ui)';
-      video.style.opacity = '0';
-      setTimeout(function(){
-        video.currentTime = 0;
-        marks(0);
-        video.style.opacity = '1';
-        setTimeout(function(){ video.style.transition = ''; }, 400);
-      }, 360);
-      return;
-    }
-    if (video.paused) { auto.on = false; return; }
-    auto.raf = requestAnimationFrame(follow);
-  }
-
-  function stopAuto(){
-    clearTimeout(auto.timer);
-    STOPPERS.forEach(function(e){ removeEventListener(e, stopAuto); });
-    removeEventListener('visibilitychange', stopAuto);
-    // прогон, доигравший сам, уже вернул сцену на нулевой кадр, и страница
-    // тоже стоит на нуле: синхронизировать нечего
-    if (!auto.on) return;
-    auto.on = false;
-    cancelAnimationFrame(auto.raf);
-    video.pause();
-    scrollTo(0, Math.round(st.start + progressNow() * (st.end - st.start)));
-  }
-
-  // сколько секунд видео уже лежит в буфере от начала
-  function buffered(){
-    for (var i = 0; i < video.buffered.length; i++){
-      if (video.buffered.start(i) <= 0.05) return video.buffered.end(i);
-    }
-    return 0;
-  }
-
-  function startAuto(){
-    // тронулись сами, ушли со сцены или спрятали вкладку: не навязываемся
-    if (scrollY > 4 || document.hidden) return stopAuto();
-    if (!waitedFrom) waitedFrom = performance.now();
-
-    /* Ждали readyState 4 (HAVE_ENOUGH_DATA), и на реальной сети это стоило
-       лишних секунд: браузер выдаёт четвёрку, только когда уверен, что
-       доиграет без остановки. Человек за это время успевал решить, что сцена
-       мёртвая, и прокрутить страницу. Файл весит 2.17 МБ на 11 секунд, это
-       1.6 Мбит/с: сеть почти всегда быстрее проигрывания. Достаточно, чтобы
-       можно было играть и в буфере лежало несколько секунд запаса. */
-    var enough = video.readyState >= 3 || buffered() >= 3;
-    if (!enough && performance.now() - waitedFrom < AUTO_WAIT_MAX){
-      auto.timer = setTimeout(startAuto, 150);
-      return;
-    }
-
-    /* Порядок важен. Раньше follow() запускался сразу после play(), а тот
-       асинхронный: на первом же кадре follow видел video.paused === true,
-       считал, что прогон кончился, и снимал auto.on. Видео при этом всё-таки
-       начинало играть, но уже без слежения за беатами. Теперь следим только
-       после подтверждённого старта. */
-    auto.on = true;
-    var play = video.play();
-    if (play && play.then){
-      play.then(function(){ auto.raf = requestAnimationFrame(follow); },
-                function(){ auto.on = false; });   // автовоспроизведение запрещено
-    } else {
-      auto.raf = requestAnimationFrame(follow);
-    }
-  }
-
-  auto.timer = setTimeout(startAuto, AUTO_DELAY);
-  STOPPERS.forEach(function(e){ addEventListener(e, stopAuto, {passive:true, once:true}); });
-  addEventListener('visibilitychange', stopAuto);
-
 })();
 
 /* ── Налипающие карточки в «Когда отказывают» ──────────────────────
