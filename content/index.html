@@ -478,9 +478,31 @@
      Границы берём у самого ScrollTrigger: у закреплённого элемента
      getBoundingClientRect отдаёт координаты fixed-позиции, и считать
      диапазон по нему бессмысленно. */
+  /* Браузер возвращает прежнюю позицию прокрутки при обновлении страницы,
+     и сцена оказывалась уже пролистанной: автопрогон видел scrollY больше
+     нуля и молча отменялся. Для страницы, которая начинается с закреплённого
+     кино, правильнее всегда начинать сначала. */
+  // ставим повторно: ScrollTrigger при создании закрепления возвращает 'auto',
+  // и одной установки в начале не хватает
+  function noRestore(){
+    try { if (history.scrollRestoration) history.scrollRestoration = 'manual'; } catch (e) {}
+  }
+  noRestore();
+  addEventListener('load', noRestore);
+
+  // manual действует со следующей загрузки, а эту браузер мог восстановить
+  // до нашего скрипта. Возвращаем сами, но только если человек не пришёл
+  // по якорю: сбросить его с #zapis обратно наверх было бы хамством
+  try {
+    var nav = performance.getEntriesByType('navigation')[0];
+    if (!location.hash && scrollY > 4 && (!nav || nav.type !== 'back_forward')){
+      scrollTo(0, 0);
+    }
+  } catch (e) {}
+
   var auto = {on:false, raf:0, timer:0};
   var AUTO_DELAY = 1800;
-  var AUTO_WAIT_MAX = 9000;         // на медленной сети не ждём вечно
+  var AUTO_WAIT_MAX = 6000;         // на медленной сети не ждём вечно
   var STOPPERS = ['wheel','touchstart','pointerdown','keydown','scroll'];
   var waitedFrom = 0;
 
@@ -508,22 +530,44 @@
     scrollTo(0, Math.round(st.start + progressNow() * (st.end - st.start)));
   }
 
+  // сколько секунд видео уже лежит в буфере от начала
+  function buffered(){
+    for (var i = 0; i < video.buffered.length; i++){
+      if (video.buffered.start(i) <= 0.05) return video.buffered.end(i);
+    }
+    return 0;
+  }
+
   function startAuto(){
     // тронулись сами, ушли со сцены или спрятали вкладку: не навязываемся
     if (scrollY > 4 || document.hidden) return stopAuto();
     if (!waitedFrom) waitedFrom = performance.now();
 
-    // HAVE_FUTURE_DATA мало: старт на полупустом буфере упрётся в докачку
-    // на первых же секундах. Ждём HAVE_ENOUGH_DATA, но не дольше потолка
-    if (video.readyState < 4 && performance.now() - waitedFrom < AUTO_WAIT_MAX){
-      auto.timer = setTimeout(startAuto, 200);
+    /* Ждали readyState 4 (HAVE_ENOUGH_DATA), и на реальной сети это стоило
+       лишних секунд: браузер выдаёт четвёрку, только когда уверен, что
+       доиграет без остановки. Человек за это время успевал решить, что сцена
+       мёртвая, и прокрутить страницу. Файл весит 2.17 МБ на 11 секунд, это
+       1.6 Мбит/с: сеть почти всегда быстрее проигрывания. Достаточно, чтобы
+       можно было играть и в буфере лежало несколько секунд запаса. */
+    var enough = video.readyState >= 3 || buffered() >= 3;
+    if (!enough && performance.now() - waitedFrom < AUTO_WAIT_MAX){
+      auto.timer = setTimeout(startAuto, 150);
       return;
     }
 
-    var play = video.play();
-    if (play && play.catch) play.catch(function(){ auto.on = false; });
+    /* Порядок важен. Раньше follow() запускался сразу после play(), а тот
+       асинхронный: на первом же кадре follow видел video.paused === true,
+       считал, что прогон кончился, и снимал auto.on. Видео при этом всё-таки
+       начинало играть, но уже без слежения за беатами. Теперь следим только
+       после подтверждённого старта. */
     auto.on = true;
-    auto.raf = requestAnimationFrame(follow);
+    var play = video.play();
+    if (play && play.then){
+      play.then(function(){ auto.raf = requestAnimationFrame(follow); },
+                function(){ auto.on = false; });   // автовоспроизведение запрещено
+    } else {
+      auto.raf = requestAnimationFrame(follow);
+    }
   }
 
   auto.timer = setTimeout(startAuto, AUTO_DELAY);
