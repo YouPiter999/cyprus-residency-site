@@ -356,12 +356,15 @@
   var video = document.getElementById('seq');
   if (!video) return;
 
-  if (reduce || saveData){
-    // остаётся постер: движение выключено в системе либо человек экономит трафик
+  if (reduce){
+    // движение выключено в системе: остаётся постер
     video.removeAttribute('autoplay');
     video.removeAttribute('preload');
     return;
   }
+  // экономия трафика не повод не показывать сцену совсем: грузим по факту
+  // появления на экране, а не заранее
+  if (saveData) video.preload = 'metadata';
 
   // мобильный файл вертикальный и вчетверо легче десктопного
   var MOB = lowEnd || innerWidth < 860;
@@ -369,9 +372,22 @@
   video.src = MOB ? 'assets/film/cyprus-descent-m.mp4' : 'assets/film/cyprus-descent.mp4';
   video.load();
 
-  var play = video.play();
-  // автовоспроизведение могут запретить: тогда остаётся постер, и это нормально
-  if (play && play.catch) play.catch(function(){});
+  function tryPlay(){
+    var p = video.play();
+    if (p && p.catch) p.catch(function(){});
+  }
+  tryPlay();
+
+  /* Телефон мог отказать в автозапуске: на iOS его глушит режим энергосбережения,
+     на Android бывает экономия трафика, и никакой muted тут не помогает. Внешне
+     это выглядит так, будто видео на мобиле «нет», хотя стоит постер. Повторяем
+     попытку при первом же касании экрана: к этому моменту жест у нас есть. */
+  ['touchstart','pointerdown','click','scroll'].forEach(function(e){
+    addEventListener(e, function once(){
+      ['touchstart','pointerdown','click','scroll'].forEach(function(x){ removeEventListener(x, once); });
+      if (video.paused) tryPlay();
+    }, {passive:true});
+  });
 
   // за экраном крутить нечего: экономим батарею на телефоне
   if ('IntersectionObserver' in window){
@@ -402,9 +418,9 @@
   if (cards.length < 2) return;
 
   var TOP = parseInt(getComputedStyle(stack).getPropertyValue('--stack-top'), 10) || 100;
-  // выступ намеренно узкий: при 16px из-под верхней карточки торчала верхушка
-  // номера следующей и читалась обрезанной цифрой, а не краем стопки
-  var STEP = 11;
+  // шаг задаёт CSS: на десктопе узкая полоска края, на телефоне столько,
+  // чтобы из-под наехавшей карточки читались номер и заголовок предыдущей
+  var STEP = parseInt(getComputedStyle(stack).getPropertyValue('--stack-step'), 10) || 11;
   function topOf(i){ return TOP + i * STEP; }
 
   var lastTop = topOf(cards.length - 1);

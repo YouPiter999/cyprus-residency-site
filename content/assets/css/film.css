@@ -99,7 +99,11 @@
   .honest-split{grid-template-columns:1fr}
   .honest-intro{position:static}
 }
-.stack{--stack-top:100px;padding-bottom:clamp(120px,18vh,200px)}
+/* --stack-step: на сколько ниже липнет каждая следующая карточка. На узком
+   экране 11px оставляли от предыдущей карточки одну полоску без текста, и
+   стопка читалась «карточки без содержимого». Там нужен сдвиг, при котором
+   видно хотя бы номер и заголовок. Значение читает скрипт. */
+.stack{--stack-top:100px;--stack-step:11px;padding-bottom:clamp(120px,18vh,200px)}
 .stack-card{margin-bottom:clamp(130px,17vh,180px);
   position:sticky;top:var(--stack-top);transform-origin:top center;
   background:var(--olive-deep);border:1px solid rgba(250,250,249,.24);
@@ -122,8 +126,15 @@
    несработавшей загрузкой. Короткий ход даёт тот же эффект без дыр:
    следующая карточка наезжает почти сразу за предыдущей. */
 @media (max-width:860px){
-  .stack{--stack-top:80px;padding-bottom:clamp(70px,10vh,110px)}
+  .stack{--stack-top:80px;--stack-step:64px;padding-bottom:clamp(70px,10vh,110px)}
   .stack-card{margin-bottom:clamp(64px,9vh,90px);min-height:clamp(190px,24vh,230px)}
+  /* заголовок предыдущей карточки должен оставаться читаемым из-под
+     наехавшей, поэтому номер и заголовок стоят в одну строку */
+  .stack-card{grid-template-columns:auto 1fr;align-items:baseline;
+    column-gap:14px;row-gap:6px}
+  .stack-no{grid-row:1}
+  .stack-card h3{grid-row:1}
+  .stack-card p{grid-column:1 / -1}
 }
 
 /* без анимации стопка не нужна: липкие блоки без масштаба просто наезжают

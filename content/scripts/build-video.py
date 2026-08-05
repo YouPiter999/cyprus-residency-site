@@ -64,9 +64,11 @@ ZOOM = 1.13                     # наезд за план, одинаковый
 
 PLAN = [SHOT] * len(PICK)
 
+# CRF мобильного файла выше: 2 МБ на телефонной сети это секунды чёрного
+# экрана вместо сцены, а разница в качестве на диагонали 6 дюймов не видна
 TARGETS = [
     ("cyprus-descent.mp4", bf.OUT_W, bf.OUT_H, 25),
-    ("cyprus-descent-m.mp4", bf.MOB_W, bf.MOB_H, 26),
+    ("cyprus-descent-m.mp4", bf.MOB_W, bf.MOB_H, 31),
 ]
 
 
