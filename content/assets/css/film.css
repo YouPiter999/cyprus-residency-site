@@ -17,6 +17,10 @@
 .beat .plate{background:linear-gradient(100deg,rgba(10,10,10,.78),rgba(10,10,10,.34) 78%,transparent);
   padding:26px 34px 28px;border-radius:var(--r);backdrop-filter:blur(2px)}
 .beat h1,.beat h2,.beat h3{color:#fafaf9}
+/* общая шкала подняла h1 до 68px, но плашка сцены шириной 620px: там такой
+   кегль рвёт «Вид на жительство Кипра» на три строки поверх картинки */
+.beat h1{font-size:clamp(30px,3.6vw,54px)}
+.beat h2{font-size:clamp(26px,2.9vw,40px)}
 .beat p{color:rgba(250,250,249,.84);margin-top:.6rem}
 .beat .step-no{font-family:'Onest',sans-serif;font-weight:700;
   font-size:clamp(36px,4vw,60px);line-height:1;color:var(--brick-hi);letter-spacing:-.03em}
@@ -30,15 +34,20 @@
   transition:background-color .4s var(--e-ui),border-color .4s var(--e-ui),transform .4s var(--e-ui)}
 .rail i.on{background:var(--brick-hi);border-color:var(--brick-hi);transform:scale(1.35)}
 
-.sticky-cta{position:fixed;right:16px;z-index:50;
-  bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  opacity:0;transform:translateY(12px);pointer-events:none;
-  transition:opacity .4s var(--e-ui),transform .4s var(--e-ui)}
-.sticky-cta.on{opacity:1;transform:none;pointer-events:auto}
-
 /* 4 карточки = ровно 4 клетки, все с описанием: пустая клетка или пустая
-   карточка это дыра в сетке, а не композиция */
-.paths{display:grid;gap:14px;grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr}
+   карточка это дыра в сетке, а не композиция.
+   Ритм неровный намеренно: сетка из четырёх одинаковых скруглённых плиток
+   встречалась на сайте трижды и читалась шаблоном. Первый путь занимает всю
+   ширину, три остальных идут узкой лентой под ним. */
+.paths{display:grid;gap:14px;grid-template-columns:repeat(3,1fr);align-items:stretch}
+.path.tall{grid-column:1 / -1;flex-direction:row;align-items:flex-end;
+  justify-content:space-between;gap:32px;padding:36px 34px 32px}
+.path.tall > div{max-width:56ch}
+.path.tall h3{font-size:clamp(24px,2.6vw,34px)}
+.path.tall .go{white-space:nowrap;padding-bottom:4px}
+@media (max-width:720px){
+  .path.tall{flex-direction:column;align-items:flex-start;gap:14px}
+}
 .path{display:flex;flex-direction:column;justify-content:space-between;gap:14px;
   text-decoration:none;padding:30px 28px 26px;border-radius:var(--r);
   background:var(--paper);border:1px solid var(--on-paper-line);
@@ -58,12 +67,14 @@
 .step{display:grid;grid-template-columns:auto 1fr;gap:clamp(18px,3vw,44px);
   padding:30px 0;border-top:1px solid var(--on-olive-line)}
 .step:last-child{border-bottom:1px solid var(--on-olive-line)}
+/* номер несёт смысл, а не только декор: 34% давали 2.5:1 и читались с трудом */
 .step .n{font-family:'Onest',sans-serif;font-weight:700;font-size:clamp(28px,3vw,42px);
-  line-height:1;color:rgba(250,250,249,.34);letter-spacing:-.03em}
+  line-height:1;color:rgba(250,250,249,.5);letter-spacing:-.03em}
 
 .honest{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+/* на чернильном фоне рамка в 14% пропадала и карточки сливались с подложкой */
 .honest div{padding:24px;border-radius:var(--r);background:rgba(250,250,249,.05);
-  border:1px solid var(--on-olive-line)}
+  border:1px solid rgba(250,250,249,.24)}
 .honest h3{font-size:20px;margin-bottom:.4rem}
 
 @media (max-width:860px){
