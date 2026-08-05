@@ -1,0 +1,60 @@
+# Публикация сайта на GitHub Pages.
+#
+# Корень сайта это папка content/, а не корень репозитория: рядом лежат
+# скрипты сборки, исходники кадров и документы, которым в вебе делать нечего.
+#
+# Сборку кадров и страниц workflow НЕ запускает намеренно. Кадры генерируются
+# около двадцати минут через внешний сервис, и падение этого сервиса не должно
+# ронять публикацию. В репозиторий кладутся уже готовые файлы.
+name: Публикация на Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# страницу выкатываем по одной за раз, но очередь не рвём:
+# отменённый на середине деплой оставляет сайт в непонятном состоянии
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Проверить, что сайт закрыт от поисковиков
+        # пока нет контактов и фактов консультанта, страница в выдаче вредна.
+        # Проверка здесь, а не в голове: снимут noindex на одной странице
+        # из пяти и не заметят
+        run: |
+          missing=0
+          for f in content/*.html; do
+            if ! grep -q 'name="robots" content="noindex' "$f"; then
+              echo "НЕТ noindex: $f"; missing=1
+            fi
+          done
+          if [ "$missing" = "1" ]; then
+            echo "Публикация остановлена: сайт ещё не готов к индексации."
+            exit 1
+          fi
+          echo "Все страницы закрыты от поисковиков."
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: content
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
