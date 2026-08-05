@@ -72,14 +72,14 @@
         </div>
       </div>
 
-      <div class="beat" data-at="0.17">
+      <div class="beat" data-at="0.30">
         <div class="plate">
           <h2>Кипр входит в ЕС</h2>
           <p>Республика Кипр состоит в Европейском союзе с 2004 года. Легальный статус здесь дают по нескольким основаниям, и они не взаимозаменяемы.</p>
         </div>
       </div>
 
-      <div class="beat" data-at="0.33">
+      <div class="beat" data-at="0.44">
         <div class="plate">
           <div class="step-no">01</div>
           <h2>Разбор</h2>
@@ -87,7 +87,7 @@
         </div>
       </div>
 
-      <div class="beat" data-at="0.50">
+      <div class="beat" data-at="0.58">
         <div class="plate">
           <div class="step-no">02</div>
           <h2>Документы</h2>
@@ -95,7 +95,7 @@
         </div>
       </div>
 
-      <div class="beat" data-at="0.66">
+      <div class="beat" data-at="0.72">
         <div class="plate">
           <div class="step-no">03</div>
           <h2>Подача</h2>
@@ -103,7 +103,7 @@
         </div>
       </div>
 
-      <div class="beat" data-at="0.82">
+      <div class="beat" data-at="0.86">
         <div class="plate">
           <div class="step-no">04</div>
           <h2>Решение</h2>
@@ -111,7 +111,7 @@
         </div>
       </div>
 
-      <div class="beat" data-at="0.94">
+      <div class="beat" data-at="0.95">
         <div class="plate">
           <h2>Отказ не приговор</h2>
           <p>У отказа всегда есть причина, и почти всегда есть следующий шаг. Разберём вашу ситуацию до того, как вы потратите деньги.</p>
@@ -428,8 +428,21 @@
   video.src = MOB ? 'assets/film/cyprus-descent-m.mp4' : 'assets/film/cyprus-descent.mp4';
   video.load();
 
+  /* Длительность нужна для перемотки прокруткой.
+
+     Одного обработчика мало: когда файл лежит в кэше, метаданные успевают
+     приехать раньше, чем мы подпишемся, событие уже не повторится, и DUR
+     навсегда остаётся нулём. Внешне это выглядит так, будто сцена не
+     реагирует на прокрутку вовсе, хотя автопрогон при этом работает: ему
+     длительность не нужна. Поэтому подписка плюс проверка готовности. */
   var DUR = 0;
-  video.addEventListener('loadedmetadata', function(){ DUR = video.duration || 0; });
+  function readDuration(){
+    if (!DUR && video.readyState >= 1 && video.duration) DUR = video.duration;
+    return DUR;
+  }
+  video.addEventListener('loadedmetadata', readDuration);
+  video.addEventListener('durationchange', readDuration);
+  readDuration();
 
   /* Перемотка по прокрутке.
      currentTime присваиваем не чаще одного раза на кадр экрана: браузер
@@ -443,6 +456,7 @@
     if (Math.abs(video.currentTime - wanted) > 0.008) video.currentTime = wanted;
   }
   function seek(t){
+    if (!readDuration()) return;      // метаданные ещё не приехали
     wanted = Math.max(0, Math.min(DUR - 0.001, t));
     if (!seekRaf) seekRaf = requestAnimationFrame(applySeek);
   }
@@ -462,7 +476,7 @@
     scrub: MOB ? 0.5 : 0.35,
     onUpdate: function(self){
       if (auto.on) return;          // во время автопрогона скролл не командует
-      seek(self.progress * DUR);
+      seek(self.progress * readDuration());
       marks(self.progress);
     }
   });
@@ -511,7 +525,10 @@
   var STOPPERS = ['wheel','touchstart','pointerdown','keydown','scroll'];
   var waitedFrom = 0;
 
-  function progressNow(){ return DUR ? Math.min(1, video.currentTime / DUR) : 0; }
+  function progressNow(){
+    var d = readDuration();
+    return d ? Math.min(1, video.currentTime / d) : 0;
+  }
 
   /* Пока видео играет, беаты ведём от него же: единственный источник времени.
 
@@ -527,8 +544,17 @@
     marks(progressNow());
     if (video.ended){
       auto.on = false;
-      video.currentTime = 0;
-      marks(0);
+      // Возврат к началу через затемнение. Без него пляж последнего кадра
+      // мгновенно сменялся облаками первого: срез посреди спокойной сцены
+      // читался как сбой, а не как приём.
+      video.style.transition = 'opacity .34s var(--e-ui)';
+      video.style.opacity = '0';
+      setTimeout(function(){
+        video.currentTime = 0;
+        marks(0);
+        video.style.opacity = '1';
+        setTimeout(function(){ video.style.transition = ''; }, 400);
+      }, 360);
       return;
     }
     if (video.paused) { auto.on = false; return; }

@@ -8,10 +8,14 @@
 .film-stage{position:relative;width:100%;height:100%}
 #seq{width:100%;height:100%;object-fit:cover;background:var(--olive-deep);
   border-radius:0}
-/* подпись поверх кадра, в углу: под кадром её теперь просто некуда положить */
-.film-note{position:absolute;right:clamp(12px,2vw,26px);bottom:10px;margin:0;
-  font-size:12px;color:rgba(250,250,249,.62);letter-spacing:.01em;
-  text-align:right;max-width:none;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+/* Подпись поверх кадра, в углу. Тень не спасала: 12px при непрозрачности
+   0.62 поверх бирюзовой воды пропадали совсем, а это единственное место,
+   где сказано, что картинка нарисована. Подложка обязательна. */
+.film-note{position:absolute;right:clamp(12px,2vw,26px);bottom:12px;margin:0;
+  font-size:13px;color:rgba(250,250,249,.92);letter-spacing:.01em;
+  text-align:right;max-width:none;
+  padding:5px 10px;border-radius:8px;background:rgba(10,10,10,.42);
+  backdrop-filter:blur(3px)}
 
 /* оверлей привязан к кадру, который теперь во весь экран */
 .film-overlay{position:absolute;inset:0;pointer-events:none}
@@ -120,7 +124,9 @@
   background:var(--olive-deep);border:1px solid rgba(250,250,249,.24);
   border-radius:24px;padding:clamp(26px,3vw,40px);
   box-shadow:0 24px 60px rgba(0,0,0,.45);
-  display:grid;gap:8px;align-content:start;min-height:clamp(210px,26vh,260px)}
+  /* высота у всех одна: при разной длине текста наезжающая карточка резала
+     последнюю строку предыдущей, и это читалось обрывом, а не наложением */
+  display:grid;gap:8px;align-content:start;min-height:clamp(232px,27vh,268px)}
 .stack-no{font-family:'Onest',sans-serif;font-weight:700;letter-spacing:-.03em;
   font-size:clamp(28px,3vw,40px);line-height:1;color:rgba(250,250,249,.5)}
 .stack-card h3{font-size:clamp(21px,2.2vw,28px)}
@@ -152,12 +158,15 @@
   /* кадр заполняет экран: cover обрезает бока, но сцена перестаёт болтаться
      в пустоте посреди вьюпорта. aspect-ratio снимаем, иначе он спорит
      с фиксированной высотой */
-  #seq{width:100%;height:74svh;aspect-ratio:auto;object-fit:cover}
-  .film-stage{padding:0 12px;width:100%}
+  /* на всю ширину и высоту пина: боковые отступы читались не приёмом,
+     а незакрытой рамкой вокруг видео */
+  #seq{width:100%;height:100%;aspect-ratio:auto;object-fit:cover}
+  .film-stage{padding:0;width:100%;height:100%}
   .beat{left:12px;right:12px;width:auto;bottom:clamp(46px,7%,70px)}
   .film-note{font-size:11.5px;text-align:left}
-  .hero-cta{gap:10px}
-  .hero-cta .btn{flex:1 1 auto;padding:14px 18px;font-size:15px}
+  /* обе кнопки одной ширины: 232 против 196 читалось небрежностью */
+  .hero-cta{gap:10px;flex-direction:column;align-items:stretch}
+  .hero-cta .btn{width:100%;padding:14px 18px;font-size:15px}
 }
 
 @media (prefers-reduced-motion:reduce){

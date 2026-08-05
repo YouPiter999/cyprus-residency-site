@@ -53,7 +53,9 @@ a{color:inherit}
 .grid > *{grid-column:content}
 .grid > .full{grid-column:full}
 
-h1,h2,h3,.display{font-family:'Onest',system-ui,sans-serif;font-weight:700;line-height:1.02;letter-spacing:-.03em}
+/* 1.02 годится для латиницы, но кириллица с выносными («р», «у», «ф») на
+   двух строках почти цепляется одна за другую */
+h1,h2,h3,.display{font-family:'Onest',system-ui,sans-serif;font-weight:700;line-height:1.12;letter-spacing:-.03em}
 /* Разница между H1 и H2 была 1.4px: иерархии не существовало, и жюри поймало
    это первым. Разводим шкалу в обе стороны, но осторожно, помня про урок с ch:
    H2 живёт в узких колонках, и крупный кегль рвал «Как я беру деньги» на три

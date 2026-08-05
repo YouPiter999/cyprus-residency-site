@@ -30,12 +30,39 @@ _spec.loader.exec_module(bf)
 from PIL import Image, ImageFilter
 
 ROOT = bf.ROOT
-FPS = 30                        # 12 читались рывками, 30 идут слитно
-SCALE = FPS / bf.FPS            # во столько раз плотнее исходной раскадровки
-BLEND = max(2, round(bf.BLEND * SCALE))
+FPS = 30
 GRAIN = 1.6                     # шум не сжимается: на видео он стоит мегабайтов
 
-PLAN = [max(1, round(n * SCALE)) for n in bf.PLAN_FRAMES]
+"""Монтаж, а не плотность кадров.
+
+Первая версия просто уплотнила исходную раскадровку с 12 fps до 30 и всё
+равно читалась рывками. Замер по готовому файлу объяснил почему: план длился
+в среднем 0.65 секунды, минимальный 0.4, и межкадровая разница внутри плана
+держалась около 2, а на каждой склейке подскакивала до 7. Семнадцать разных
+картинок за одиннадцать секунд это клиповая нарезка: сколько кадров в секунду
+ни поставь, мельтешит сам материал.
+
+Поэтому: планов вдвое меньше, каждый вдвое длиннее, переход занимает почти
+половину плана. Склейка раз в полторы секунды вместо каждой половины, и
+картинки не сменяются, а перетекают.
+"""
+# девять исходников из семнадцати, равномерно по спуску: облака, море,
+# остров, побережье, город, вода у берега. Порядок кадров это сам сюжет,
+# поэтому берём через один, а не подряд
+PICK = [0, 2, 4, 6, 8, 10, 12, 14, 16]
+SHOT = 46                       # 1.53 сек на план
+# Переход длиннее самого показа. Пик межкадровой разницы на склейке прямо
+# пропорционален скорости изменения прозрачности: при 18 кадрах она менялась
+# на 8% за кадр и склейка всё ещё выстреливала втрое выше фона. На 28 кадрах
+# это 5%, и переход перестаёт читаться событием.
+BLEND = 32                      # 1.07 сек перетекания
+# Длительность видео от BLEND не зависит: переход накладывается на начало
+# плана, а не добавляется к нему. Поэтому удлинять его дёшево. Цена другая:
+# чем длиннее, тем дольше кадр держится смесью двух картинок и тем мягче
+# выглядит. Выше 70 процентов плана уходить нельзя, начинается двоение.
+ZOOM = 1.13                     # наезд за план, одинаковый: разнобой читался рывком
+
+PLAN = [SHOT] * len(PICK)
 
 TARGETS = [
     ("cyprus-descent.mp4", bf.OUT_W, bf.OUT_H, 25),
@@ -44,25 +71,30 @@ TARGETS = [
 
 
 def render(w: int, h: int, out_dir: pathlib.Path) -> int:
-    sources = [bf.grade(s) for s in bf.load_sources()]
-    # наезд считаем от ИСХОДНОЙ длины плана: иначе на плотной раскадровке
-    # zoom_end упрётся в потолок и движение станет одинаковым у всех планов
-    zends = [bf.zoom_end(n) for n in bf.PLAN_FRAMES]
+    all_sources = bf.load_sources()
+    sources = [bf.grade(all_sources[i]) for i in PICK]
 
     written = 0
     for i, n in enumerate(PLAN):
         for local in range(n):
-            t = local / max(1, n + BLEND - 1)
-            frame = bf.ken_burns(sources[i], t, zends[i])
+            # t доводится до единицы: раньше зум не доходил до конца плана
+            # и на склейке камера заметно откатывалась назад
+            t = local / max(1, n - 1)
+            frame = bf.ken_burns(sources[i], t, ZOOM)
 
             transition = local < BLEND and i > 0
             if transition:
-                prev_n = PLAN[i - 1]
-                t_prev = (prev_n + local) / max(1, prev_n + BLEND - 1)
-                prev = bf.ken_burns(sources[i - 1], min(t_prev, 1.0), zends[i - 1])
+                # предыдущий план продолжает наезжать под уходящим кадром,
+                # иначе на переходе движение останавливается
+                t_prev = min(1.0, 1.0 + local / max(1, PLAN[i - 1] - 1) * 0.12)
+                prev = bf.ken_burns(sources[i - 1], min(1.0, t_prev), ZOOM)
                 alpha = bf.smoothstep((local + 1) / (BLEND + 1))
                 frame = Image.blend(prev, frame, alpha)
-                frame = frame.filter(ImageFilter.GaussianBlur(1.4))
+                # смаз только в середине перехода: на всём переходе он давал
+                # мыло там, где кадр уже почти чистый
+                mid = 1 - abs((local + 1) / (BLEND + 1) * 2 - 1)
+                if mid > 0.15:
+                    frame = frame.filter(ImageFilter.GaussianBlur(1.1 * mid))
 
             frame = bf.fit(frame, w, h)
             frame = bf.vignette(frame)
@@ -104,8 +136,8 @@ def encode(name: str, w: int, h: int, crf: int) -> None:
 
 
 if __name__ == "__main__":
-    print(f"Раскадровка {sum(bf.PLAN_FRAMES)} кадров при {bf.FPS} fps "
-          f"превращается в {sum(PLAN)} при {FPS} fps")
+    print(f"{len(PICK)} планов по {SHOT/FPS:.2f} сек, переход {BLEND/FPS:.2f} сек, "
+          f"итого {sum(PLAN)} кадров при {FPS} fps = {sum(PLAN)/FPS:.1f} сек")
     for name, w, h, crf in TARGETS:
         encode(name, w, h, crf)
     print("Готово")
