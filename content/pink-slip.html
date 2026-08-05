@@ -3,14 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Сайт не опубликован: пока нет контактов, статуса и цен, индексация вредна.
+     Снять этот тег и Disallow в robots.txt одновременно, перед запуском. -->
+<meta name="robots" content="noindex, nofollow">
 <title>Визитёрский ВНЖ Кипра для живущих на доход из-за рубежа</title>
 <meta name="description" content="Временный вид на жительство Республики Кипр для тех, кто не работает на Кипре и живёт на доход из других стран.">
 <meta property="og:title" content="Визитёрский ВНЖ. ВНЖ Кипра">
 <meta property="og:description" content="Временный вид на жительство Республики Кипр для тех, кто не работает на Кипре и живёт на доход из других стран.">
 <meta property="og:type" content="article">
 <link rel="stylesheet" href="assets/css/site.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Визитёрский ВНЖ Кипра для живущих на доход из-за рубежа", "description": "Временный вид на жительство Республики Кипр для тех, кто не работает на Кипре и живёт на доход из других стран.", "inLanguage": "ru"}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Можно ли работать на Кипре с этим статусом?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Основание прямо предполагает, что вы себя обеспечиваете из других источников. Нужна работа, значит нужен другой путь."}}, {"@type": "Question", "name": "Считается ли удалённая работа на зарубежную компанию?", "acceptedAnswer": {"@type": "Answer", "text": "Это пограничный случай, и трактовка зависит от оформления отношений. Для удалённой работы есть отдельное основание, обычно надёжнее идти по нему."}}, {"@type": "Question", "name": "Как часто продлевать?", "acceptedAnswer": {"@type": "Answer", "text": "Статус временный и продлевается регулярно. Календарь продления составляем сразу, чтобы не попасть в просрочку."}}, {"@type": "Question", "name": "Можно ли включить супруга и детей?", "acceptedAnswer": {"@type": "Answer", "text": "Да, но требования к доходу вырастут пропорционально числу людей."}}]}</script>
+<!-- Скрытое состояние блоков включается до первой отрисовки, иначе страница
+     успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
+     страница без анимации нормальна, страница из невидимого текста нет. -->
+<script>var h=document.documentElement;h.className+=' js-reveal';setTimeout(function(){if(!h.dataset.rvOk)h.className=h.className.replace(' js-reveal','')},2500)</script>
 </head>
 <body>
 <svg class="grain" aria-hidden="true"><filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#g)"/></svg>
@@ -35,7 +40,7 @@
       </div>
     </div>
     <div>
-      <img src="assets/film/frames/f_060.avif" width="960" height="401" alt="" loading="eager">
+      <img src="assets/film/frames/f_060.avif" width="960" height="400" alt="" loading="eager">
       <p class="cap">Иллюстрация. Сцена нарисована, это не фотосъёмка Кипра.</p>
     </div>
   </div>
@@ -53,18 +58,53 @@
 
 <section id="dokumenty" class="grid s-olive on-dark full">
   <div class="grid full" style="padding:0">
-    <div>
-      <div class="head-wrap"><h2>Что понадобится</h2></div>
-      <p style="margin-bottom:24px">Список ориентировочный. Под вашу ситуацию он меняется, и именно на этом этапе теряют больше всего времени.</p>
-      <ul class="docs">
-        <li><span>Заграничный паспорт со сроком действия с запасом</span></li>
-        <li><span>Подтверждение дохода за требуемый период: выписки, договоры аренды, справки</span></li>
-        <li><span>Договор аренды или документы на собственное жильё на Кипре</span></li>
-        <li><span>Медицинская страховка с подходящим покрытием</span></li>
-        <li><span>Справка о несудимости с переводом и легализацией</span></li>
-        <li><span>Заполненная анкета и оплаченные пошлины</span></li>
-      </ul>
-      <div style="margin-top:32px"><a class="btn btn-primary" href="#zapis">Собрать список под себя</a></div>
+    <div class="work-split">
+      <div>
+        <div class="head-wrap"><h2>Что понадобится</h2></div>
+        <p style="margin-bottom:24px">Список ориентировочный. Под вашу ситуацию он меняется, и именно на этом этапе теряют больше всего времени.</p>
+        <p style="margin-bottom:24px">Проверку пакета я делаю до подачи, а не у окна: там уже поздно.</p>
+        <div style="margin-top:32px"><a class="btn btn-primary" href="#zapis">Собрать список под себя</a></div>
+      </div>
+
+      <!-- Свёрстанный объект, а не сгенерированный кадр. Печати и штампа нет
+           намеренно: имитация официальной отметки читалась бы как подделка. -->
+      <figure class="sheet">
+        <div class="sheet-paper">
+          <p class="sheet-kicker">Лист проверки</p>
+          <h3>Визитёрский ВНЖ</h3>
+          <p class="sheet-sub">Бланк под это основание. Под вашу ситуацию строки меняются.</p>
+          <ul class="sheet-rows">
+            <li>
+              <span class="sheet-box"></span>
+              <span>Заграничный паспорт со сроком действия с запасом</span>
+            </li>
+            <li class="mark">
+              <span class="sheet-box"></span>
+              <span>Подтверждение дохода за требуемый период: выписки, договоры аренды, справки</span><svg class="sheet-underline" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M3 8.2 C62 4 128 9.8 186 5.2 C226 2.4 268 7.4 297 3.8"/></svg>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Договор аренды или документы на собственное жильё на Кипре</span>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Медицинская страховка с подходящим покрытием</span>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Справка о несудимости с переводом и легализацией</span>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Заполненная анкета и оплаченные пошлины</span>
+            </li>
+          </ul>
+          <div class="sheet-note">
+            <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M5 22.4 C7.4 15 12 9.8 19.4 6.4"/><path d="M13.4 4.6 C16 5 18.4 5.6 20.4 6.2 C19.8 8.2 19.4 10.2 19.2 12.4"/></svg>
+            <p>Главная причина отказов не сумма, а то, что доход нечем доказать.</p>
+          </div>
+        </div>
+      </figure>
     </div>
   </div>
 </section>
@@ -139,5 +179,6 @@
   </div>
 </footer>
 <script src="assets/js/form.js"></script>
+<script src="assets/js/reveal.js"></script>
 </body>
 </html>

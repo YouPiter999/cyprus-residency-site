@@ -11,6 +11,8 @@ OUT = pathlib.Path(r"C:\Users\Сергей\Downloads\егор-сайт\content")
 PAGES = [
     {
         "slug": "pink-slip",
+        "mark": 1,
+        "note": "Главная причина отказов не сумма, а то, что доход нечем доказать.",
         "title": "Визитёрский ВНЖ Кипра для живущих на доход из-за рубежа",
         "desc": "Временный вид на жительство Республики Кипр для тех, кто не работает на Кипре и живёт на доход из других стран.",
         "h1": "Визитёрский ВНЖ",
@@ -40,6 +42,8 @@ PAGES = [
     },
     {
         "slug": "digital-nomad",
+        "mark": 2,
+        "note": "Выписки за требуемый период собираются заранее, задним числом их не сделать.",
         "title": "Виза цифрового кочевника на Кипре для удалённой работы",
         "desc": "Вид на жительство Республики Кипр для тех, кто работает удалённо на зарубежных работодателей и заказчиков.",
         "h1": "Цифровой кочевник",
@@ -69,6 +73,8 @@ PAGES = [
     },
     {
         "slug": "pmzh-investicii",
+        "mark": 2,
+        "note": "Происхождение денег проверяют строго, и непрозрачный источник частая причина отказа.",
         "title": "ПМЖ Кипра по инвестициям в недвижимость",
         "desc": "Постоянный вид на жительство Республики Кипр через инвестиции в недвижимость, компанию или фонд.",
         "h1": "ПМЖ по инвестициям",
@@ -98,11 +104,13 @@ PAGES = [
     },
     {
         "slug": "rabota-i-semya",
+        "mark": 2,
+        "note": "Легализация документов о родстве занимает недели, начинать стоит с неё.",
         "title": "ВНЖ Кипра через работу и воссоединение семьи",
         "desc": "Вид на жительство Республики Кипр по трудоустройству у кипрского работодателя и по воссоединению с семьёй.",
         "h1": "Работа и семья",
         "lead": "Два разных пути с общей чертой: заявку двигает не только заявитель. В одном случае работодатель, в другом член семьи со статусом.",
-        "hero_frame": "f_150",
+        "hero_frame": "f_130",
         "who": [
             ("Есть предложение от работодателя на Кипре", "Разрешение на работу запрашивает компания, а не вы сами."),
             ("Ваш супруг или родитель уже со статусом", "Воссоединение опирается на статус того, кто уже легально живёт на Кипре."),
@@ -134,12 +142,19 @@ TPL = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Сайт не опубликован: пока нет контактов, статуса и цен, индексация вредна.
+     Снять этот тег и Disallow в robots.txt одновременно, перед запуском. -->
+<meta name="robots" content="noindex, nofollow">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta property="og:title" content="{h1}. ВНЖ Кипра">
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="article">
 <link rel="stylesheet" href="assets/css/site.css">
+<!-- Скрытое состояние блоков включается до первой отрисовки, иначе страница
+     успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
+     страница без анимации нормальна, страница из невидимого текста нет. -->
+<script>var h=document.documentElement;h.className+=' js-reveal';setTimeout(function(){{if(!h.dataset.rvOk)h.className=h.className.replace(' js-reveal','')}},2500)</script>
 </head>
 <body>
 <svg class="grain" aria-hidden="true"><filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#g)"/></svg>
@@ -164,7 +179,7 @@ TPL = """<!doctype html>
       </div>
     </div>
     <div>
-      <img src="assets/film/frames/{hero_frame}.webp" width="1024" height="428" alt="" loading="eager">
+      <img src="assets/film/frames/{hero_frame}.avif" width="960" height="400" alt="" loading="eager">
       <p class="cap">Иллюстрация. Сцена нарисована, это не фотосъёмка Кипра.</p>
     </div>
   </div>
@@ -179,13 +194,30 @@ TPL = """<!doctype html>
 
 <section id="dokumenty" class="grid s-olive on-dark full">
   <div class="grid full" style="padding:0">
-    <div>
-      <div class="head-wrap"><h2>Что понадобится</h2></div>
-      <p style="margin-bottom:24px">Список ориентировочный. Под вашу ситуацию он меняется, и именно на этом этапе теряют больше всего времени.</p>
-      <ul class="docs">
+    <div class="work-split">
+      <div>
+        <div class="head-wrap"><h2>Что понадобится</h2></div>
+        <p style="margin-bottom:24px">Список ориентировочный. Под вашу ситуацию он меняется, и именно на этом этапе теряют больше всего времени.</p>
+        <p style="margin-bottom:24px">Проверку пакета я делаю до подачи, а не у окна: там уже поздно.</p>
+        <div style="margin-top:32px"><a class="btn btn-primary" href="#zapis">Собрать список под себя</a></div>
+      </div>
+
+      <!-- Свёрстанный объект, а не сгенерированный кадр. Печати и штампа нет
+           намеренно: имитация официальной отметки читалась бы как подделка. -->
+      <figure class="sheet">
+        <div class="sheet-paper">
+          <p class="sheet-kicker">Лист проверки</p>
+          <h3>{h1}</h3>
+          <p class="sheet-sub">Бланк под это основание. Под вашу ситуацию строки меняются.</p>
+          <ul class="sheet-rows">
 {docs_html}
-      </ul>
-      <div style="margin-top:32px"><a class="btn btn-primary" href="#zapis">Собрать список под себя</a></div>
+          </ul>
+          <div class="sheet-note">
+            <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M5 22.4 C7.4 15 12 9.8 19.4 6.4"/><path d="M13.4 4.6 C16 5 18.4 5.6 20.4 6.2 C19.8 8.2 19.4 10.2 19.2 12.4"/></svg>
+            <p>{note}</p>
+          </div>
+        </div>
+      </figure>
     </div>
   </div>
 </section>
@@ -239,9 +271,10 @@ TPL = """<!doctype html>
     <p class="hint">Отвечаю лично, обычно в течение дня.</p>
   </form>
   <div class="form-done" id="formDone">
-    <h3 style="color:#fafaf9">Заявка собрана</h3>
-    <p style="margin-top:8px">Приёмник заявок ещё не подключён: нужен рабочий контакт Егора. Текст обращения уже сформирован правильно.</p>
+    <h3 style="color:#fafaf9">Заявка сформирована</h3>
+    <p style="margin-top:8px">Скопируйте текст ниже и отправьте его мне в мессенджер. Так я сразу увижу вашу ситуацию и отвечу по делу.</p>
     <pre id="donePayload" style="margin-top:14px;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:13.5px;color:rgba(250,250,249,.86)"></pre>
+    <button class="btn btn-primary" type="button" id="copyBtn" style="margin-top:16px">Скопировать текст</button>
   </div>
 </section>
 </main>
@@ -254,17 +287,50 @@ TPL = """<!doctype html>
   </div>
 </footer>
 <script src="assets/js/form.js"></script>
+<script src="assets/js/reveal.js"></script>
 </body>
 </html>
 """
 
 
+# служебные заметки команды в интерфейсе посетителя это баг, а не мелочь:
+# один раз человек уже читал после отправки формы записку с именем заказчика
+BAD_PHRASES = ["Приёмник заявок", "заглушка", "TODO"]
+
+
+# подчёркивание нарисовано путём, а не border-bottom: ровная линия читается
+# как элемент интерфейса, неровная как след руки
+UNDERLINE = ('<svg class="sheet-underline" viewBox="0 0 300 12" '
+             'preserveAspectRatio="none" aria-hidden="true">'
+             '<path d="M3 8.2 C62 4 128 9.8 186 5.2 C226 2.4 268 7.4 297 3.8"/></svg>')
+
+
+def sheet_rows(page):
+    """Строки бланка. Отмеченная строка получает подчёркивание от руки,
+    к которому относится заметка на полях."""
+    out = []
+    for i, d in enumerate(page["docs"]):
+        cls = ' class="mark"' if i == page["mark"] else ""
+        tail = UNDERLINE if i == page["mark"] else ""
+        out.append(f'            <li{cls}>\n'
+                   f'              <span class="sheet-box"></span>\n'
+                   f'              <span>{d}</span>{tail}\n'
+                   f'            </li>')
+    return "\n".join(out)
+
+
+def q_mark(text):
+    """Вопрос без знака вопроса читается как заголовок раздела."""
+    text = text.rstrip()
+    return text if text.endswith("?") else text + "?"
+
+
 def build(page):
     who_html = "\n".join(
         f'    <div><h3>{t}</h3><p>{d}</p></div>' for t, d in page["who"])
-    docs_html = "\n".join(f'        <li><span>{d}</span></li>' for d in page["docs"])
+    docs_html = sheet_rows(page)
     faq_html = "\n".join(
-        f'    <details><summary>{q}</summary><p>{a}</p></details>'
+        f'    <details><summary>{q_mark(q)}</summary><p>{a}</p></details>'
         for q, a in page["faq"])
     other_html = "\n".join(
         f'    <a href="{s}.html"><p class="who">Другое основание</p><h3>{n}</h3></a>'
@@ -277,6 +343,14 @@ def build(page):
     if 'class="todo"' in html:
         raise SystemExit(f"{page['slug']}: видимая плашка-заглушка, "
                          f"недоделку посетителю не показываем")
+    for bad in BAD_PHRASES:
+        if bad in html:
+            raise SystemExit(f"{page['slug']}: служебная фраза «{bad}» в интерфейсе")
+    # кадр героя жил ссылкой на f_150, которого нет: секвенция кончается на 134.
+    # молчаливый 404 в шапке страницы должен ловиться сборкой, а не глазами
+    frame = OUT / "assets" / "film" / "frames" / f"{page['hero_frame']}.avif"
+    if not frame.exists():
+        raise SystemExit(f"{page['slug']}: кадр {frame.name} не существует")
     (OUT / f"{page['slug']}.html").write_text(html, encoding="utf-8")
     return len(html)
 

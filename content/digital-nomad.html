@@ -3,14 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Сайт не опубликован: пока нет контактов, статуса и цен, индексация вредна.
+     Снять этот тег и Disallow в robots.txt одновременно, перед запуском. -->
+<meta name="robots" content="noindex, nofollow">
 <title>Виза цифрового кочевника на Кипре для удалённой работы</title>
 <meta name="description" content="Вид на жительство Республики Кипр для тех, кто работает удалённо на зарубежных работодателей и заказчиков.">
 <meta property="og:title" content="Цифровой кочевник. ВНЖ Кипра">
 <meta property="og:description" content="Вид на жительство Республики Кипр для тех, кто работает удалённо на зарубежных работодателей и заказчиков.">
 <meta property="og:type" content="article">
 <link rel="stylesheet" href="assets/css/site.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Виза цифрового кочевника на Кипре для удалённой работы", "description": "Вид на жительство Республики Кипр для тех, кто работает удалённо на зарубежных работодателей и заказчиков.", "inLanguage": "ru"}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Что если у меня несколько заказчиков, а не один работодатель?", "acceptedAnswer": {"@type": "Answer", "text": "Это рабочий вариант, но пакет собирается иначе: понадобятся контракты и подтверждение регулярности поступлений."}}, {"@type": "Question", "name": "Можно ли устроиться в кипрскую компанию потом?", "acceptedAnswer": {"@type": "Answer", "text": "Смена основания это отдельная процедура, а не автоматический переход. Планировать её лучше заранее."}}, {"@type": "Question", "name": "Учитывается ли доход в криптовалюте?", "acceptedAnswer": {"@type": "Answer", "text": "Как правило требуется подтверждение через банковские каналы. Криптодоход сам по себе сложно принять как доказательство."}}, {"@type": "Question", "name": "Берут ли семью?", "acceptedAnswer": {"@type": "Answer", "text": "Да, супруга и несовершеннолетних детей обычно можно включить, требования к доходу при этом растут."}}]}</script>
+<!-- Скрытое состояние блоков включается до первой отрисовки, иначе страница
+     успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
+     страница без анимации нормальна, страница из невидимого текста нет. -->
+<script>var h=document.documentElement;h.className+=' js-reveal';setTimeout(function(){if(!h.dataset.rvOk)h.className=h.className.replace(' js-reveal','')},2500)</script>
 </head>
 <body>
 <svg class="grain" aria-hidden="true"><filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#g)"/></svg>
@@ -35,7 +40,7 @@
       </div>
     </div>
     <div>
-      <img src="assets/film/frames/f_120.avif" width="960" height="401" alt="" loading="eager">
+      <img src="assets/film/frames/f_120.avif" width="960" height="400" alt="" loading="eager">
       <p class="cap">Иллюстрация. Сцена нарисована, это не фотосъёмка Кипра.</p>
     </div>
   </div>
@@ -53,18 +58,53 @@
 
 <section id="dokumenty" class="grid s-olive on-dark full">
   <div class="grid full" style="padding:0">
-    <div>
-      <div class="head-wrap"><h2>Что понадобится</h2></div>
-      <p style="margin-bottom:24px">Список ориентировочный. Под вашу ситуацию он меняется, и именно на этом этапе теряют больше всего времени.</p>
-      <ul class="docs">
-        <li><span>Заграничный паспорт</span></li>
-        <li><span>Трудовой договор или контракты с зарубежными заказчиками</span></li>
-        <li><span>Подтверждение дохода: банковские выписки за требуемый период</span></li>
-        <li><span>Документы на жильё на Кипре</span></li>
-        <li><span>Медицинская страховка</span></li>
-        <li><span>Справка о несудимости</span></li>
-      </ul>
-      <div style="margin-top:32px"><a class="btn btn-primary" href="#zapis">Собрать список под себя</a></div>
+    <div class="work-split">
+      <div>
+        <div class="head-wrap"><h2>Что понадобится</h2></div>
+        <p style="margin-bottom:24px">Список ориентировочный. Под вашу ситуацию он меняется, и именно на этом этапе теряют больше всего времени.</p>
+        <p style="margin-bottom:24px">Проверку пакета я делаю до подачи, а не у окна: там уже поздно.</p>
+        <div style="margin-top:32px"><a class="btn btn-primary" href="#zapis">Собрать список под себя</a></div>
+      </div>
+
+      <!-- Свёрстанный объект, а не сгенерированный кадр. Печати и штампа нет
+           намеренно: имитация официальной отметки читалась бы как подделка. -->
+      <figure class="sheet">
+        <div class="sheet-paper">
+          <p class="sheet-kicker">Лист проверки</p>
+          <h3>Цифровой кочевник</h3>
+          <p class="sheet-sub">Бланк под это основание. Под вашу ситуацию строки меняются.</p>
+          <ul class="sheet-rows">
+            <li>
+              <span class="sheet-box"></span>
+              <span>Заграничный паспорт</span>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Трудовой договор или контракты с зарубежными заказчиками</span>
+            </li>
+            <li class="mark">
+              <span class="sheet-box"></span>
+              <span>Подтверждение дохода: банковские выписки за требуемый период</span><svg class="sheet-underline" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M3 8.2 C62 4 128 9.8 186 5.2 C226 2.4 268 7.4 297 3.8"/></svg>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Документы на жильё на Кипре</span>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Медицинская страховка</span>
+            </li>
+            <li>
+              <span class="sheet-box"></span>
+              <span>Справка о несудимости</span>
+            </li>
+          </ul>
+          <div class="sheet-note">
+            <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M5 22.4 C7.4 15 12 9.8 19.4 6.4"/><path d="M13.4 4.6 C16 5 18.4 5.6 20.4 6.2 C19.8 8.2 19.4 10.2 19.2 12.4"/></svg>
+            <p>Выписки за требуемый период собираются заранее, задним числом их не сделать.</p>
+          </div>
+        </div>
+      </figure>
     </div>
   </div>
 </section>
@@ -139,5 +179,6 @@
   </div>
 </footer>
 <script src="assets/js/form.js"></script>
+<script src="assets/js/reveal.js"></script>
 </body>
 </html>

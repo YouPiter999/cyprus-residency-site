@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Сайт не опубликован: пока нет контактов, статуса и цен, индексация вредна.
+     Снять этот тег и Disallow в robots.txt одновременно, перед запуском. -->
+<meta name="robots" content="noindex, nofollow">
 <title>ВНЖ Кипра: разбор ситуации и сопровождение до карты резидента</title>
 <meta name="description" content="Помогаю получить вид на жительство Республики Кипр: разбираю ситуацию, подбираю основание, собираю документы и веду до решения миграционной службы.">
 <meta property="og:title" content="ВНЖ Кипра: разбор и сопровождение">
@@ -13,6 +16,10 @@
 
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/film.css">
+<!-- Скрытое состояние блоков включается до первой отрисовки, иначе страница
+     успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
+     страница без анимации нормальна, страница из невидимого текста нет. -->
+<script>var h=document.documentElement;h.className+=' js-reveal';setTimeout(function(){if(!h.dataset.rvOk)h.className=h.className.replace(' js-reveal','')},2500)</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "ВНЖ Кипра: разбор ситуации и сопровождение до карты резидента", "description": "Помогаю получить вид на жительство Республики Кипр: разбираю ситуацию, подбираю основание, собираю документы и веду до решения миграционной службы.", "inLanguage": "ru"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Нужно ли жить на Кипре постоянно?", "acceptedAnswer": {"@type": "Answer", "text": "Зависит от основания. У одних путей есть требование к присутствию, у других к отсутствию длинных перерывов. Разбираем на консультации под ваш случай."}}, {"@type": "Question", "name": "Можно ли работать на Кипре с этим статусом?", "acceptedAnswer": {"@type": "Answer", "text": "Не с любым. Часть оснований прямо запрещает местное трудоустройство, часть разрешает работу только на зарубежных заказчиков."}}, {"@type": "Question", "name": "Берут ли детей и супруга?", "acceptedAnswer": {"@type": "Answer", "text": "По большинству оснований семью можно включить, но требования к доходу при этом растут. Считаем от состава семьи."}}, {"@type": "Question", "name": "Сколько ждать решения?", "acceptedAnswer": {"@type": "Answer", "text": "Срок зависит от органа и загрузки, и никто из консультантов им не управляет. Честный ответ здесь только диапазон, а не дата."}}, {"@type": "Question", "name": "Что будет, если откажут?", "acceptedAnswer": {"@type": "Answer", "text": "У отказа есть причина в письме. Разбираем её и решаем: устранять недостатки, менять основание или подавать заново."}}]}</script>
 </head>
@@ -146,6 +153,7 @@
 <!-- ── КАК ПРОХОДИТ РАБОТА (full-bleed) ──────────────── -->
 <section class="grid s-olive on-dark full">
   <div class="grid full" style="padding:0">
+    <div class="work-split">
     <div>
       <div class="head-wrap">
         <h2>Как проходит работа</h2>
@@ -157,6 +165,49 @@
         <div class="step"><div class="n">04</div><div><h3>Решение и продление</h3><p>Получение карты либо разбор причины отказа. Напоминаю о продлении заранее.</p></div></div>
       </div>
       <div style="margin-top:34px"><a class="btn btn-primary" href="#zapis">Записаться на разбор</a></div>
+    </div>
+
+    <!-- Свёрстанный объект, а не сгенерированный кадр: рядом с нарисованной
+         сценой нужна хотя бы одна рукотворная вещь. Отметки нарисованы путями,
+         печати и штампа нет намеренно. -->
+    <figure class="sheet">
+      <div class="sheet-paper">
+        <p class="sheet-kicker">Лист проверки</p>
+        <h3>Пакет перед подачей</h3>
+        <p class="sheet-sub">Так выглядит проверка до того, как вы окажетесь у окна.</p>
+        <ul class="sheet-rows">
+          <li class="done">
+            <span class="sheet-box"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M4.2 13.6 C6.4 15.4 8.2 17.6 9.8 20.6 C13 13.8 16.6 8.2 22 3.6"/></svg></span>
+            <span>Паспорт: срок действия с запасом на всю процедуру</span>
+          </li>
+          <li class="mark">
+            <span class="sheet-box"></span>
+            <span>Доход: выписки, договоры, справки за нужный период</span>
+            <svg class="sheet-underline" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M3 8.2 C62 4 128 9.8 186 5.2 C226 2.4 268 7.4 297 3.8"/></svg>
+          </li>
+          <li class="done">
+            <span class="sheet-box"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M4.6 13.2 C6.8 15.2 8.4 17.4 9.6 20.4 C12.8 13.4 16.8 8 22.2 3.4"/></svg></span>
+            <span>Жильё: договор аренды или документы на собственность</span>
+          </li>
+          <li>
+            <span class="sheet-box"></span>
+            <span>Страховка: покрытие проверяем до оплаты полиса</span>
+          </li>
+          <li>
+            <span class="sheet-box"></span>
+            <span>Несудимость: перевод и легализация, срок годности короткий</span>
+          </li>
+          <li>
+            <span class="sheet-box"></span>
+            <span>Анкета и пошлины</span>
+          </li>
+        </ul>
+        <div class="sheet-note">
+          <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M5 22.4 C7.4 15 12 9.8 19.4 6.4"/><path d="M13.4 4.6 C16 5 18.4 5.6 20.4 6.2 C19.8 8.2 19.4 10.2 19.2 12.4"/></svg>
+          <p>Здесь теряют больше всего времени: деньги есть, а бумаг под них нет.</p>
+        </div>
+      </div>
+    </figure>
     </div>
   </div>
 </section>
@@ -432,5 +483,6 @@
 <!-- форма живёт в общем файле: дублировать её логику на пяти страницах
      значит чинить один баг пять раз -->
 <script src="assets/js/form.js"></script>
+<script src="assets/js/reveal.js"></script>
 </body>
 </html>

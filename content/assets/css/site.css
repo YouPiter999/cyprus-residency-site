@@ -211,7 +211,97 @@ footer a{color:rgba(250,250,249,.9)}
   .topbar .brand{font-size:16px}
 }
 
+/* ── лист проверки пакета ──────────────────────────────
+   Единственный визуальный объект на сайте, который не нарисован генератором,
+   а свёрстан. Кадры сцены синтетические, и это видно; рукотворная вещь рядом
+   с ними держит доверие. Отметки нарисованы путями, а не символом «галочка»:
+   шрифтовая галочка идеальна, а от руки так не выходит.
+   Штампа и печати здесь намеренно нет: имитация официальной отметки на сайте
+   про легальный статус читалась бы как подделка документа. */
+.sheet{margin:0;position:relative}
+/* второй лист под первым: стопка бумаги вместо одинокого прямоугольника */
+.sheet::before{content:'';position:absolute;inset:16px -5px -7px 18px;
+  background:rgba(250,250,249,.26);border-radius:3px;transform:rotate(1.3deg);
+  box-shadow:0 12px 30px rgba(10,10,10,.18)}
+/* overflow режет росчерк по краю бумаги: нарисованное от руки не должно
+   вылезать за лист, на узком экране линия уходила за границу */
+.sheet-paper{position:relative;overflow:hidden;background:var(--paper);color:var(--on-paper-1);
+  padding:clamp(26px,3vw,36px) clamp(22px,2.6vw,32px) clamp(28px,3vw,36px);
+  border-radius:3px;                       /* бумага не бывает со скруглением 14px */
+  box-shadow:0 1px 0 rgba(10,10,10,.12),0 28px 64px rgba(10,10,10,.32);
+  transform:rotate(-.7deg)}
+/* селекторы намеренно с запасом по весу: лист лежит на тёмной секции, где
+   правило .s-olive p красит текст в светлый. На белой бумаге это невидимка */
+.sheet-paper .sheet-kicker{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  font-weight:600;color:var(--olive)}
+.sheet-paper h3{font-size:clamp(20px,2vw,24px);margin:.35rem 0 .1rem;color:var(--on-paper-1)}
+/* линейка под шапкой бланка: полоса поверху сливалась с оливковой секцией
+   и читалась обрезанным краем листа */
+.sheet-paper .sheet-sub{font-size:13.5px;color:var(--on-paper-2);
+  padding-bottom:14px;margin-bottom:4px;border-bottom:2px solid var(--olive)}
+
+.sheet-rows{display:grid;gap:0;margin:0;padding:0}
+.sheet-rows li{list-style:none;display:grid;grid-template-columns:22px 1fr;
+  gap:14px;align-items:start;padding:11px 0;font-size:15px;line-height:1.45;
+  border-bottom:1px dashed rgba(10,10,10,.16)}
+.sheet-rows li:last-child{border-bottom:0}
+.sheet-paper p{max-width:none;color:var(--on-paper-1)}
+.sheet-box{position:relative;width:18px;height:18px;margin-top:2px;
+  border:1.5px solid rgba(10,10,10,.42);border-radius:2px}
+/* отметка выходит за клетку: попадать ровно в квадрат человек не старается */
+.sheet-box svg{position:absolute;left:-4px;top:-7px;width:26px;height:26px;
+  fill:none;stroke:var(--brick);stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round}
+.sheet-rows .done{color:var(--on-paper-2)}
+/* отмеченной строке нужен запас снизу: иначе росчерк ложится прямо на буквы */
+.sheet-rows .mark{position:relative;padding-bottom:19px}
+/* подчёркивание от руки под строкой, к которой относится заметка на полях */
+.sheet-underline{position:absolute;left:36px;right:8px;bottom:4px;height:12px;
+  fill:none;stroke:var(--brick);stroke-width:2;opacity:.55;
+  stroke-linecap:round;pointer-events:none}
+.sheet-note{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;
+  margin-top:18px;font-size:13.5px;line-height:1.45;color:var(--brick-text)}
+.sheet-note svg{width:26px;height:26px;fill:none;stroke:var(--brick);
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.sheet-note p{max-width:32ch;font-size:inherit;color:inherit}
+
+/* два блока рядом: слева объяснение, справа сам лист */
+/* по центру, а не по верху: колонки разной высоты, и при выравнивании по верху
+   под короткой оставалась пустая четверть экрана */
+.work-split{display:grid;gap:clamp(30px,4vw,64px);
+  grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center}
+.work-split .steps{grid-template-columns:1fr}
+@media (max-width:860px){
+  .work-split{grid-template-columns:1fr}
+  /* наклон и стопка на узком экране только режут края */
+  .sheet-paper{transform:none}
+  .sheet::before{display:none}
+}
+
+/* ── появление блоков при скролле ─────────────────────
+   Скрытое начальное состояние задаётся стилями, а не скриптом: если ждать,
+   пока reveal.js разметит узлы, между отрисовкой и запуском успевает мелькнуть
+   готовая страница. Класс js-reveal ставит встроенный скрипт в <head>, он же
+   снимает его по таймауту, если reveal.js не доехал.
+   Список селекторов повторяет тот, что в reveal.js. Внутри #film и .topbar
+   этих классов нет, поэтому кино-сцена и шапка не могут остаться невидимыми.
+   Список завёрнут в :where намеренно. Без него `.js-reveal .reqs > div` весит
+   больше, чем `.js-reveal .in`, и карточки «Кому подходит» и «Другие основания»
+   оставались невидимыми навсегда: класс появления просто не мог их перебить.
+   :where обнуляет вес списка, и одно правило показа накрывает все случаи. */
+.js-reveal :where(.head-wrap, .path, .step, .honest > div, .reqs > div,
+                  .aside-card, .sheet, .other a, .faq, .docs){
+  opacity:0;transform:translateY(14px);
+  transition:opacity .62s var(--e-enter),transform .62s var(--e-enter);
+  transition-delay:calc(var(--rv-i,0) * 70ms)}
+.js-reveal .in{opacity:1;transform:none}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  /* важнее прочего: без этого при отключённом движении страница осталась бы
+     пустой, потому что .in навешивает скрипт, а он в этом режиме не работает */
+  .js-reveal :where(.head-wrap, .path, .step, .honest > div, .reqs > div,
+                    .aside-card, .sheet, .other a, .faq, .docs){
+    opacity:1;transform:none}
 }
