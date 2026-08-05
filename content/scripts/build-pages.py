@@ -150,6 +150,7 @@ TPL = """<!doctype html>
 <meta property="og:title" content="{h1}. ВНЖ Кипра">
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="article">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/site.css">
 <!-- Скрытое состояние блоков включается до первой отрисовки, иначе страница
      успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
