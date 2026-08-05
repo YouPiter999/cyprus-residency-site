@@ -250,7 +250,8 @@ TPL = """<!doctype html>
   <div class="two-col">
     <div>
       <div class="head-wrap" style="margin-bottom:22px"><h2>Частые вопросы</h2></div>
-      <div class="aside-card" style="background:rgba(10,10,10,.04)">
+      <!-- на песочной секции песочная карточка не читалась как карточка -->
+      <div class="aside-card" style="background:var(--paper);border-color:rgba(10,10,10,.18)">
         <h3>Не нашли свой случай</h3>
         <p>Ситуации редко совпадают с шаблоном. Опишите свою, и я скажу прямо, проходит она или нет.</p>
         <div style="margin-top:18px"><a class="btn btn-primary" href="#zapis">Записаться на разбор</a></div>

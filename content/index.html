@@ -61,7 +61,9 @@
     <div class="film-overlay">
       <div class="beat on" data-at="0" id="beat1">
         <div class="plate">
-          <h1>Вид на жительство Кипра</h1>
+          <!-- неразрывные пробелы: перенос должен идти «Вид на жительство /
+               Кипра», а не оставлять висячее «на» в конце строки -->
+          <h1>Вид&nbsp;на&nbsp;жительство Кипра</h1>
           <p class="lead" style="color:rgba(250,250,249,.86)">Разберу вашу ситуацию, подберу основание и доведу до решения миграционной службы.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#zapis" style="background:var(--brick)">Записаться на разбор</a>
@@ -228,9 +230,12 @@
 <!-- ── ЧЕСТНЫЙ БЛОК (full-bleed) ──────────────────────── -->
 <section class="grid s-ink on-dark full">
   <div class="grid full" style="padding:0">
-    <div>
+    <div class="honest-split">
+    <div class="honest-intro">
       <div class="head-wrap"><h2>Когда отказывают</h2></div>
-      <p style="margin-bottom:30px">Отказ в миграции штатный исход, а не редкость. Вот частые причины и что я с ними делаю.</p>
+      <p style="margin-bottom:24px">Отказ в миграции штатный исход, а не редкость. Вот частые причины и что я с ними делаю.</p>
+      <p><strong style="color:#fafaf9">Чего я не делаю:</strong> не обещаю одобрение, не называю сроки решения органа как гарантию, не работаю с поддельными документами и не беру денег за результат, на который не влияю.</p>
+    </div>
 
       <!-- Карточки налипают одна на другую: каждая следующая наезжает на
            предыдущую, а та отъезжает вглубь. Причины отказа читаются по одной,
@@ -258,7 +263,6 @@
             <p>Человек подаёт по пути, который ему не подходит. Это ловится на разборе, до трат.</p>
           </article>
       </div>
-      <p style="margin-top:28px"><strong style="color:#fafaf9">Чего я не делаю:</strong> не обещаю одобрение, не называю сроки решения органа как гарантию, не работаю с поддельными документами и не беру денег за результат, на который не влияю.</p>
     </div>
   </div>
 </section>
@@ -290,7 +294,8 @@
   <div class="two-col">
     <div>
       <div class="head-wrap" style="margin-bottom:22px"><h2>Частые вопросы</h2></div>
-      <div class="aside-card" style="background:rgba(10,10,10,.04)">
+      <!-- на песочной секции песочная карточка не читалась как карточка -->
+      <div class="aside-card" style="background:var(--paper);border-color:rgba(10,10,10,.18)">
         <h3>Не нашли свой случай</h3>
         <p>Ситуации редко совпадают с шаблоном. Опишите свою, и я скажу прямо, проходит она или нет.</p>
         <div style="margin-top:18px"><a class="btn btn-primary" href="#zapis">Записаться на разбор</a></div>
@@ -508,11 +513,25 @@
 
   function progressNow(){ return DUR ? Math.min(1, video.currentTime / DUR) : 0; }
 
-  // пока видео играет, беаты ведём от него же: единственный источник времени
+  /* Пока видео играет, беаты ведём от него же: единственный источник времени.
+
+     По окончании возвращаем сцену в начало. Прогон доигрывал до последнего
+     беата и оставлял первый экран с надписью «Отказ не приговор»: человек,
+     который просто открыл страницу и отвлёкся на десять секунд, возвращался
+     к сайту без названия услуги и без кнопки. Заодно это чинит рассинхрон:
+     страница всё это время стоит на нуле, поэтому вернуть сцену на нулевой
+     кадр честнее, чем телепортировать полосу прокрутки на пятую часть
+     документа при первом же движении колеса. */
   function follow(){
     if (!auto.on) return;
     marks(progressNow());
-    if (video.ended || video.paused) { auto.on = false; return; }
+    if (video.ended){
+      auto.on = false;
+      video.currentTime = 0;
+      marks(0);
+      return;
+    }
+    if (video.paused) { auto.on = false; return; }
     auto.raf = requestAnimationFrame(follow);
   }
 
@@ -520,10 +539,9 @@
     clearTimeout(auto.timer);
     STOPPERS.forEach(function(e){ removeEventListener(e, stopAuto); });
     removeEventListener('visibilitychange', stopAuto);
-    // синхронизируем и когда прогон уже доиграл сам: иначе человек, который
-    // досмотрел сцену до конца, при первой прокрутке увидит её заново
-    // с нулевой секунды
-    if (!auto.on && video.currentTime < 0.05) return;
+    // прогон, доигравший сам, уже вернул сцену на нулевой кадр, и страница
+    // тоже стоит на нуле: синхронизировать нечего
+    if (!auto.on) return;
     auto.on = false;
     cancelAnimationFrame(auto.raf);
     video.pause();
