@@ -45,7 +45,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:var(--paper);color:var(--on-paper-1);
   font-family:'Manrope',system-ui,sans-serif;font-size:17px;line-height:1.65;
   font-weight:400;overflow-x:clip}
-img,canvas{display:block;max-width:100%}
+img,canvas,video{display:block;max-width:100%}
 a{color:inherit}
 
 .grid{display:grid;

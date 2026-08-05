@@ -44,8 +44,14 @@
 <section id="film" class="grid" style="padding:0">
   <div class="full film-pin" id="filmPin">
     <div class="film-stage">
-      <canvas id="seq" width="960" height="400" role="img"
-        aria-label="Спуск с высоты: облака, море, остров Кипр, побережье, город, пляж и вода у берега"></canvas>
+      <!-- Видео, а не секвенция картинок. Секвенция шла 12 кадров в секунду
+           и на автопрогоне читалась рывками; здесь движение посчитано честно
+           при 30 fps, а проигрывание идёт аппаратно. Источник подставляет
+           скрипт: мобильный файл вертикальный и вчетверо легче, грузить оба
+           незачем. -->
+      <video id="seq" width="960" height="400" muted playsinline preload="auto"
+        disablepictureinpicture poster="assets/film/frames/f_001.avif"
+        aria-label="Спуск с высоты: облака, море, остров Кипр, побережье, город, пляж и вода у берега"></video>
       <p class="film-note">Иллюстрация. Сцена нарисована, это не фотосъёмка Кипра.</p>
 
     <div class="rail" id="rail" aria-hidden="true">
@@ -380,144 +386,67 @@
   var saveData = (navigator.connection && navigator.connection.saveData) === true;
   var lowEnd = (navigator.deviceMemory && navigator.deviceMemory <= 4) || matchMedia('(pointer: coarse)').matches;
 
-  var canvas = document.getElementById('seq');
-  var ctx = canvas.getContext('2d', {alpha:false});
+  var video = document.getElementById('seq');
   var pin = document.getElementById('filmPin');
   var beats = Array.prototype.slice.call(document.querySelectorAll('.beat'));
   var railDots = Array.prototype.slice.call(document.querySelectorAll('.rail i'));
 
-  // мобильная папка втрое легче: 204 кадра по 4G это гарантированный провал
+  // мобильный файл вертикальный и вчетверо легче: широкий кроп на телефоне
+  // вырождается в полоску, а десктопный вес по мобильной сети не оправдан
   var MOB = lowEnd || innerWidth < 860;
-  var DIR = MOB ? 'assets/film/frames-m/' : 'assets/film/frames/';
-  var COUNT = MOB ? 45 : 134;
-  // мобильные кадры вертикальные: широкий кроп на телефоне вырождается в полоску
-  var CW = MOB ? 600 : 960, CH = MOB ? 750 : 400;
-  canvas.width = CW; canvas.height = CH;
 
-  var imgs = new Array(COUNT);
-  var BLEND_STEPS = MOB ? 10 : 24;
-
-  function ready(im){ return im && im.complete && im.naturalWidth > 0; }
-
-  // cover-fit вручную
-  function blit(img){
-    var s = Math.max(CW / img.naturalWidth, CH / img.naturalHeight);
-    var w = img.naturalWidth * s, h = img.naturalHeight * s;
-    ctx.drawImage(img, (CW-w)/2, (CH-h)/2, w, h);
-  }
-
-  // ближайший загруженный кадр к нужному. Канвас при промахе НЕ чистим:
-  // clearRect на быстром флике даёт белые вспышки
-  function nearestReady(i){
-    if (ready(imgs[i])) return i;
-    for (var d=1; d<COUNT; d++){
-      if (i-d >= 0 && ready(imgs[i-d])) return i-d;
-      if (i+d < COUNT && ready(imgs[i+d])) return i+d;
-    }
-    return -1;
-  }
-
-  /* Дробный номер кадра, а не целый.
-     Раскадровка идёт 13 кадров в секунду и намеренно неравномерная. При
-     прокрутке дискретность маскирует инерция scrub, а при автопрогоне сцена
-     шла заметными ступеньками. Соседний кадр подмешивается сверху по дробной
-     части: движение становится непрерывным, стоит это одного лишнего
-     drawImage на перерисовку. */
-  var lastKey = '';
-  function draw(f){
-    var i = Math.max(0, Math.min(COUNT-1, Math.floor(f)));
-    var t = Math.max(0, Math.min(1, f - i));
-    var a = nearestReady(i);
-    // ничего не готово: выходим НЕ пометив кадр отрисованным, иначе пришедший
-    // позже onload будет отброшен и канвас останется пустым
-    if (a < 0) return;
-    // смешиваем только с настоящим следующим кадром: подмешать «ближайший
-    // готовый» вместо него значит показать скачок с растворением
-    var b = (a === i && i+1 < COUNT && ready(imgs[i+1])) ? i+1 : -1;
-
-    // t квантуем: ступеней между кадрами достаточно, чтобы глаз не отличил
-    // от плавного, а перерисовок втрое меньше. На телефоне ступеней меньше:
-    // там каждая лишняя пара drawImage бьёт по прокрутке
-    var key = a + ':' + b + ':' + (b < 0 ? 0 : Math.round(t * BLEND_STEPS));
-    if (key === lastKey) return;
-    lastKey = key;
-
-    blit(imgs[a]);
-    if (b >= 0 && t > 0.02){
-      ctx.globalAlpha = t;
-      blit(imgs[b]);
-      ctx.globalAlpha = 1;
-    }
-  }
-
-  function src(i){ return DIR + 'f_' + String(i+1).padStart(3,'0') + '.avif'; }
-
-  var decoded = 0;
-  function loadFrame(i){
-    if (imgs[i]) return imgs[i];
-    var im = new Image();
-    im.decoding = 'async';
-    im.src = src(i);
-    // декодируем заранее. Без этого первый drawImage кадра распаковывает AVIF
-    // синхронно в кадре анимации, и прогон спотыкается ровно на новых кадрах
-    im.addEventListener('load', function(){
-      if (im.decode) im.decode().then(count, count); else count();
-      function count(){ decoded++; }
-    });
-    imgs[i] = im;
-    return im;
-  }
-
-  if (reduce || saveData){
-    // секвенция не грузится вообще: пин без движения хуже, чем его отсутствие
-    var still = loadFrame(0);
-    still.onload = function(){ draw(0); };
-    document.getElementById('rail').style.display = 'none';
-    beats.forEach(function(b){ b.classList.add('on'); });
-    return;
-  }
-
-  // первый кадр рисуем сразу, до любого скролла: иначе белая вспышка
-  var first = loadFrame(0);
-  first.onload = function(){ draw(0); };
-  if (first.complete) draw(0);
-
-  /* Остальные подтягиваем очередью, чтобы не забивать сеть разом.
-     Темп поднят: прежние 4 кадра за 320мс это 12.5 кадра в секунду, ровно
-     на грани скорости показа. Автопрогон догонял загрузку, промахивался мимо
-     неготовых кадров и шёл рывками. Теперь секвенция приезжает быстрее, чем
-     её успевают посмотреть. */
-  var next = 1;
-  function pump(){
-    var budget = next < 24 ? 8 : 6;
-    while (next < COUNT && budget-- > 0){ loadFrame(next++); }
-    if (next < COUNT) setTimeout(pump, next < 24 ? 60 : 140);
-  }
-  addEventListener('load', pump);
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  // компромисс: 3.6 экрана читались как топтание, но при 2.7 семь текстовых
-  // блоков пролетают быстрее, чем их успеваешь прочесть. 3.2 держит и то, и то:
-  // около 320px скролла на блок и 15px на кадр
-  var PIN_VH = MOB ? 260 : 320;
-
-  // отрисовка вынесена из onUpdate: тот же код гоняет и скролл, и автопрогон
-  function render(p){
-    draw(p * (COUNT - 1));            // дробный номер: кадры смешиваются
-
-    // беаты по дискретным порогам: scrubbed-текст невозможно прочитать
+  // беаты и рельс живут отдельно от картинки: их гоняет и скролл, и видео
+  function marks(p){
     for (var k=0;k<beats.length;k++){
       var at = parseFloat(beats[k].getAttribute('data-at'));
       var nextAt = (k+1 < beats.length) ? parseFloat(beats[k+1].getAttribute('data-at')) : 1.01;
       beats[k].classList.toggle('on', p >= at - 0.005 && p < nextAt - 0.005);
     }
-    // рельс маршрута: отметки загораются на вехах
-    var marks = [0.33,0.50,0.66,0.82];
+    var rail = [0.33,0.50,0.66,0.82];
     for (var m=0;m<railDots.length;m++){
-      railDots[m].classList.toggle('on', p >= marks[m] - 0.005);
+      railDots[m].classList.toggle('on', p >= rail[m] - 0.005);
     }
   }
+
+  if (reduce || saveData){
+    // видео не грузим вовсе: остаётся постер, а весь текст показываем сразу.
+    // Закреплённая сцена без движения хуже, чем её отсутствие
+    video.removeAttribute('preload');
+    document.getElementById('rail').style.display = 'none';
+    beats.forEach(function(b){ b.classList.add('on'); });
+    return;
+  }
+
+  // постер тоже свой: горизонтальный кадр на телефоне лёг бы полоской поперёк
+  // вертикального видео и мигнул бы при первом кадре
+  video.poster = MOB ? 'assets/film/frames-m/f_001.avif' : 'assets/film/frames/f_001.avif';
+  video.src = MOB ? 'assets/film/cyprus-descent-m.mp4' : 'assets/film/cyprus-descent.mp4';
+  video.load();
+
+  var DUR = 0;
+  video.addEventListener('loadedmetadata', function(){ DUR = video.duration || 0; });
+
+  /* Перемотка по прокрутке.
+     currentTime присваиваем не чаще одного раза на кадр экрана: браузер
+     обрабатывает каждую перемотку асинхронно, и очередь из десятка запросов
+     за кадр он разгребает рывками. Копим желаемое время, ставим последнее. */
+  var wanted = -1, seekRaf = 0;
+  function applySeek(){
+    seekRaf = 0;
+    if (wanted < 0 || !DUR) return;
+    // мельче четверти кадра двигать нечего: 30 fps это 33мс на кадр
+    if (Math.abs(video.currentTime - wanted) > 0.008) video.currentTime = wanted;
+  }
+  function seek(t){
+    wanted = Math.max(0, Math.min(DUR - 0.001, t));
+    if (!seekRaf) seekRaf = requestAnimationFrame(applySeek);
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // компромисс: 3.6 экрана читались как топтание, но при 2.7 семь текстовых
+  // блоков пролетают быстрее, чем их успеваешь прочесть. 3.2 держит и то, и то
+  var PIN_VH = MOB ? 260 : 320;
 
   var st = ScrollTrigger.create({
     trigger: pin,
@@ -528,80 +457,73 @@
     scrub: MOB ? 0.5 : 0.35,
     onUpdate: function(self){
       if (auto.on) return;          // во время автопрогона скролл не командует
-      render(self.progress);
+      seek(self.progress * DUR);
+      marks(self.progress);
     }
   });
 
   /* ── Автопрогон сцены ─────────────────────────────────────────────
-     Если посетитель ничего не делает 1.8 секунды, сцена начинает играть
-     сама: иначе человек видит неподвижный кадр и не догадывается, что
-     здесь есть кино.
+     Если посетитель ничего не делает 1.8 секунды, сцена играет сама: иначе
+     человек видит неподвижный кадр и не догадывается, что здесь есть кино.
 
-     Передача управления сделана через синхронизацию скролла, а не через
-     перерисовку. При первом же действии мы ставим позицию страницы ровно
-     туда, где сейчас находится автопрогон. Сцена закреплена, поэтому такой
-     переход не виден вообще: кадр и текст уже нужные, меняется только
-     число в scrollY. Обратный порядок (просто отдать управление) дёргал бы
-     картинку с 60-го кадра на нулевой.
+     Прогон это обычный play(), а не покадровая отрисовка. Ровно поэтому мы
+     и ушли от секвенции: проигрывание видео идёт мимо основного потока, и
+     ни загрузка страницы, ни сборщик мусора его не дёргают.
+
+     Передача управления сделана через синхронизацию скролла. При первом же
+     действии позиция страницы встаёт ровно туда, где сейчас видео. Сцена
+     закреплена, поэтому переход не виден вообще: кадр и текст уже нужные,
+     меняется только число в scrollY.
 
      Границы берём у самого ScrollTrigger: у закреплённого элемента
      getBoundingClientRect отдаёт координаты fixed-позиции, и считать
      диапазон по нему бессмысленно. */
-  var auto = {on:false, p:0, raf:0, last:0, timer:0};
-  var AUTO_DELAY = 1800;                    // сколько ждём бездействия
-  // длительность задана временем, а не кадрами в секунду: мобильная папка
-  // втрое короче десктопной, и при общем fps сцена там пролетала за четыре
-  // секунды вместо одиннадцати
-  var AUTO_MS = MOB ? 6000 : 10000;
-  var AUTO_STEP = 1 / AUTO_MS;              // прогресс за миллисекунду
+  var auto = {on:false, raf:0, timer:0};
+  var AUTO_DELAY = 1800;
+  var AUTO_WAIT_MAX = 9000;         // на медленной сети не ждём вечно
   var STOPPERS = ['wheel','touchstart','pointerdown','keydown','scroll'];
+  var waitedFrom = 0;
 
-  function tick(now){
+  function progressNow(){ return DUR ? Math.min(1, video.currentTime / DUR) : 0; }
+
+  // пока видео играет, беаты ведём от него же: единственный источник времени
+  function follow(){
     if (!auto.on) return;
-    // потолок шага: при просадке кадра прогресс иначе прыгает сразу через
-    // полтора кадра, и это читается рывком
-    var dt = Math.min(now - auto.last, 60);
-    auto.last = now;
-    auto.p = Math.min(1, auto.p + dt * AUTO_STEP);
-    render(auto.p);
-    if (auto.p < 1) auto.raf = requestAnimationFrame(tick);
-    else auto.on = false;                      // доиграли, дальше ведёт человек
+    marks(progressNow());
+    if (video.ended || video.paused) { auto.on = false; return; }
+    auto.raf = requestAnimationFrame(follow);
   }
 
   function stopAuto(){
     clearTimeout(auto.timer);
     STOPPERS.forEach(function(e){ removeEventListener(e, stopAuto); });
     removeEventListener('visibilitychange', stopAuto);
-    if (!auto.on && !auto.p) return;
+    // синхронизируем и когда прогон уже доиграл сам: иначе человек, который
+    // досмотрел сцену до конца, при первой прокрутке увидит её заново
+    // с нулевой секунды
+    if (!auto.on && video.currentTime < 0.05) return;
     auto.on = false;
     cancelAnimationFrame(auto.raf);
-    // ставим страницу туда, где остановилась сцена
-    scrollTo(0, Math.round(st.start + auto.p * (st.end - st.start)));
+    video.pause();
+    scrollTo(0, Math.round(st.start + progressNow() * (st.end - st.start)));
   }
-
-  /* 1.8 секунды это когда НАЧАТЬ, а не обязательство стартовать на пустом
-     буфере. Прогон показывает 13 кадров в секунду, и если запустить его
-     раньше загрузки, он побежит по неготовым кадрам: каждый промах рисует
-     ближайший готовый, соседа для смешивания нет, и сцена идёт рывками.
-     Ждём готовности почти всей секвенции, но не дольше AUTO_WAIT_MAX: на
-     медленной сети лучше показать движение с огрехами, чем не показать
-     ничего. */
-  var AUTO_NEED = 0.92;              // доля готовых кадров для чистого прогона
-  var AUTO_WAIT_MAX = 9000;
-  var waitedFrom = 0;
 
   function startAuto(){
     // тронулись сами, ушли со сцены или спрятали вкладку: не навязываемся
     if (scrollY > 4 || document.hidden) return stopAuto();
     if (!waitedFrom) waitedFrom = performance.now();
 
-    if (decoded < COUNT * AUTO_NEED && performance.now() - waitedFrom < AUTO_WAIT_MAX){
+    // HAVE_FUTURE_DATA мало: старт на полупустом буфере упрётся в докачку
+    // на первых же секундах. Ждём HAVE_ENOUGH_DATA, но не дольше потолка
+    if (video.readyState < 4 && performance.now() - waitedFrom < AUTO_WAIT_MAX){
       auto.timer = setTimeout(startAuto, 200);
       return;
     }
+
+    var play = video.play();
+    if (play && play.catch) play.catch(function(){ auto.on = false; });
     auto.on = true;
-    auto.last = performance.now();
-    auto.raf = requestAnimationFrame(tick);
+    auto.raf = requestAnimationFrame(follow);
   }
 
   auto.timer = setTimeout(startAuto, AUTO_DELAY);

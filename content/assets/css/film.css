@@ -3,7 +3,10 @@
 #film{position:relative;background:var(--olive-deep);color:var(--on-olive-1)}
 .film-pin{position:relative;height:100svh;overflow:hidden;display:grid;place-items:center}
 .film-stage{position:relative;width:min(100%,1320px);margin-inline:auto;padding:0 clamp(1rem,3.4vw,58px)}
-#seq{width:100%;height:auto;border-radius:var(--r);background:var(--olive-deep);
+/* aspect-ratio обязателен: у video, в отличие от canvas, height:auto до
+   загрузки метаданных даёт нулевую высоту, и сцена схлопывается в полоску */
+#seq{width:100%;height:auto;aspect-ratio:960/400;object-fit:cover;
+  border-radius:var(--r);background:var(--olive-deep);
   box-shadow:0 30px 80px rgba(0,0,0,.34)}
 .film-note{margin-top:10px;font-size:12.5px;color:var(--on-olive-2);
   letter-spacing:.01em;text-align:right;max-width:none}
@@ -118,8 +121,9 @@
   .rail{display:none}
   .beat .plate{padding:18px 20px 20px}
   /* кадр заполняет экран: cover обрезает бока, но сцена перестаёт болтаться
-     в пустоте посреди вьюпорта */
-  #seq{width:100%;height:74svh;object-fit:cover}
+     в пустоте посреди вьюпорта. aspect-ratio снимаем, иначе он спорит
+     с фиксированной высотой */
+  #seq{width:100%;height:74svh;aspect-ratio:auto;object-fit:cover}
   .film-stage{padding:0 12px;width:100%}
   .beat{left:12px;right:12px;width:auto;bottom:clamp(46px,7%,70px)}
   .film-note{font-size:11.5px;text-align:left}
