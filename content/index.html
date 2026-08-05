@@ -225,11 +225,32 @@
     <div>
       <div class="head-wrap"><h2>Когда отказывают</h2></div>
       <p style="margin-bottom:30px">Отказ в миграции штатный исход, а не редкость. Вот частые причины и что я с ними делаю.</p>
-      <div class="honest">
-        <div><h3>Доход не подтверждён</h3><p>Деньги есть, а бумаг под них нет. Собираем доказательства заранее, а не в день подачи.</p></div>
-        <div><h3>Документы просрочены</h3><p>У справок короткий срок годности. Считаем календарь пакета от даты подачи назад.</p></div>
-        <div><h3>Страховка не того покрытия</h3><p>Дешёвый полис часто не проходит по требованиям. Проверяем условия до оплаты.</p></div>
-        <div><h3>Основание не то</h3><p>Человек подаёт по пути, который ему не подходит. Это ловится на разборе, до трат.</p></div>
+
+      <!-- Карточки налипают одна на другую: каждая следующая наезжает на
+           предыдущую, а та отъезжает вглубь. Причины отказа читаются по одной,
+           а не сеткой из четырёх одинаковых плиток. Порядок неслучаен: сверху
+           то, на чём валятся чаще. -->
+      <div class="stack" id="honestStack">
+          <article class="stack-card">
+            <p class="stack-no">01</p>
+            <h3>Доход не подтверждён</h3>
+            <p>Деньги есть, а бумаг под них нет. Собираем доказательства заранее, а не в день подачи.</p>
+          </article>
+          <article class="stack-card">
+            <p class="stack-no">02</p>
+            <h3>Документы просрочены</h3>
+            <p>У справок короткий срок годности. Считаем календарь пакета от даты подачи назад.</p>
+          </article>
+          <article class="stack-card">
+            <p class="stack-no">03</p>
+            <h3>Страховка не того покрытия</h3>
+            <p>Дешёвый полис часто не проходит по требованиям. Проверяем условия до оплаты.</p>
+          </article>
+          <article class="stack-card">
+            <p class="stack-no">04</p>
+            <h3>Основание не то</h3>
+            <p>Человек подаёт по пути, который ему не подходит. Это ловится на разборе, до трат.</p>
+          </article>
       </div>
       <p style="margin-top:28px"><strong style="color:#fafaf9">Чего я не делаю:</strong> не обещаю одобрение, не называю сроки решения органа как гарантию, не работаю с поддельными документами и не беру денег за результат, на который не влияю.</p>
     </div>
@@ -444,9 +465,25 @@
   // блоков пролетают быстрее, чем их успеваешь прочесть. 3.2 держит и то, и то:
   // около 320px скролла на блок и 15px на кадр
   var PIN_VH = MOB ? 260 : 320;
-  var state = {f:0};
 
-  ScrollTrigger.create({
+  // отрисовка вынесена из onUpdate: тот же код гоняет и скролл, и автопрогон
+  function render(p){
+    draw(Math.min(COUNT-1, Math.max(0, Math.round(p * (COUNT-1)))));
+
+    // беаты по дискретным порогам: scrubbed-текст невозможно прочитать
+    for (var k=0;k<beats.length;k++){
+      var at = parseFloat(beats[k].getAttribute('data-at'));
+      var nextAt = (k+1 < beats.length) ? parseFloat(beats[k+1].getAttribute('data-at')) : 1.01;
+      beats[k].classList.toggle('on', p >= at - 0.005 && p < nextAt - 0.005);
+    }
+    // рельс маршрута: отметки загораются на вехах
+    var marks = [0.33,0.50,0.66,0.82];
+    for (var m=0;m<railDots.length;m++){
+      railDots[m].classList.toggle('on', p >= marks[m] - 0.005);
+    }
+  }
+
+  var st = ScrollTrigger.create({
     trigger: pin,
     start: 'top top',
     end: '+=' + (PIN_VH - 100) + '%',
@@ -454,25 +491,113 @@
     pinSpacing: true,
     scrub: MOB ? 0.5 : 0.35,
     onUpdate: function(self){
-      var p = self.progress;
-      var i = Math.min(COUNT-1, Math.max(0, Math.round(p * (COUNT-1))));
-      draw(i);
-
-      // беаты по дискретным порогам: scrubbed-текст невозможно прочитать
-      for (var k=0;k<beats.length;k++){
-        var at = parseFloat(beats[k].getAttribute('data-at'));
-        var nextAt = (k+1 < beats.length) ? parseFloat(beats[k+1].getAttribute('data-at')) : 1.01;
-        var on = p >= at - 0.005 && p < nextAt - 0.005;
-        beats[k].classList.toggle('on', on);
-      }
-      // рельс маршрута: отметки загораются на вехах
-      var marks = [0.33,0.50,0.66,0.82];
-      for (var m=0;m<railDots.length;m++){
-        railDots[m].classList.toggle('on', p >= marks[m] - 0.005);
-      }
+      if (auto.on) return;          // во время автопрогона скролл не командует
+      render(self.progress);
     }
   });
 
+  /* ── Автопрогон сцены ─────────────────────────────────────────────
+     Если посетитель ничего не делает 1.8 секунды, сцена начинает играть
+     сама: иначе человек видит неподвижный кадр и не догадывается, что
+     здесь есть кино.
+
+     Передача управления сделана через синхронизацию скролла, а не через
+     перерисовку. При первом же действии мы ставим позицию страницы ровно
+     туда, где сейчас находится автопрогон. Сцена закреплена, поэтому такой
+     переход не виден вообще: кадр и текст уже нужные, меняется только
+     число в scrollY. Обратный порядок (просто отдать управление) дёргал бы
+     картинку с 60-го кадра на нулевой.
+
+     Границы берём у самого ScrollTrigger: у закреплённого элемента
+     getBoundingClientRect отдаёт координаты fixed-позиции, и считать
+     диапазон по нему бессмысленно. */
+  var auto = {on:false, p:0, raf:0, last:0, timer:0};
+  var AUTO_DELAY = 1800;                    // сколько ждём бездействия
+  // длительность задана временем, а не кадрами в секунду: мобильная папка
+  // втрое короче десктопной, и при общем fps сцена там пролетала за четыре
+  // секунды вместо одиннадцати
+  var AUTO_MS = MOB ? 6000 : 10000;
+  var AUTO_STEP = 1 / AUTO_MS;              // прогресс за миллисекунду
+  var STOPPERS = ['wheel','touchstart','pointerdown','keydown','scroll'];
+
+  function tick(now){
+    if (!auto.on) return;
+    var dt = Math.min(now - auto.last, 100);   // вкладку свернули: не прыгаем
+    auto.last = now;
+    auto.p = Math.min(1, auto.p + dt * AUTO_STEP);
+    render(auto.p);
+    if (auto.p < 1) auto.raf = requestAnimationFrame(tick);
+    else auto.on = false;                      // доиграли, дальше ведёт человек
+  }
+
+  function stopAuto(){
+    clearTimeout(auto.timer);
+    STOPPERS.forEach(function(e){ removeEventListener(e, stopAuto); });
+    removeEventListener('visibilitychange', stopAuto);
+    if (!auto.on && !auto.p) return;
+    auto.on = false;
+    cancelAnimationFrame(auto.raf);
+    // ставим страницу туда, где остановилась сцена
+    scrollTo(0, Math.round(st.start + auto.p * (st.end - st.start)));
+  }
+
+  function startAuto(){
+    // тронулись сами, ушли со сцены или спрятали вкладку: не навязываемся
+    if (scrollY > 4 || document.hidden) return stopAuto();
+    auto.on = true;
+    auto.last = performance.now();
+    auto.raf = requestAnimationFrame(tick);
+  }
+
+  auto.timer = setTimeout(startAuto, AUTO_DELAY);
+  STOPPERS.forEach(function(e){ addEventListener(e, stopAuto, {passive:true, once:true}); });
+  addEventListener('visibilitychange', stopAuto);
+
+})();
+
+/* ── Налипающие карточки в «Когда отказывают» ──────────────────────
+   Липкость делает CSS, масштаб гоняет ScrollTrigger. Карточка отъезжает
+   вглубь ровно на то время, пока следующая наезжает сверху: сдвиг конца
+   диапазона на верх СЛЕДУЮЩЕГО блока, а не на конец всей стопки, иначе
+   первая карточка ужимается сразу за все три хода.
+   Отдельным IIFE, потому что сцена выше выходит раньше при отключённом
+   движении, и стопка тогда осталась бы без обработчиков. */
+(function(){
+  'use strict';
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (typeof gsap === 'undefined' || !window.ScrollTrigger) return;
+
+  var stack = document.getElementById('honestStack');
+  if (!stack) return;
+  var cards = Array.prototype.slice.call(stack.querySelectorAll('.stack-card'));
+  if (cards.length < 2) return;
+
+  var TOP = parseInt(getComputedStyle(stack).getPropertyValue('--stack-top'), 10) || 100;
+  // выступ намеренно узкий: при 16px из-под верхней карточки торчала верхушка
+  // номера следующей и читалась обрезанной цифрой, а не краем стопки
+  var STEP = 11;
+  function topOf(i){ return TOP + i * STEP; }
+
+  var lastTop = topOf(cards.length - 1);
+
+  cards.forEach(function(card, i){
+    // каждая следующая липнет чуть ниже: видны края тех, что уже легли
+    card.style.top = topOf(i) + 'px';
+    if (i === cards.length - 1) return;             // верхняя не отъезжает
+
+    gsap.to(card, {
+      scale: 1 - (cards.length - 1 - i) * 0.035,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: card,
+        start: 'top ' + topOf(i) + 'px',            // момент, когда карточка легла
+        endTrigger: cards[cards.length - 1],
+        end: 'top ' + lastTop + 'px',               // момент, когда легла последняя
+        scrub: true,
+        invalidateOnRefresh: true
+      }
+    });
+  });
 })();
 </script>
 <!-- форма живёт в общем файле: дублировать её логику на пяти страницах
