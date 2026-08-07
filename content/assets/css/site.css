@@ -22,7 +22,7 @@
      даёт 4.39:1 и не проходит AA, поэтому у ссылок свой затемнённый оттенок */
   --brick-text:#9A3A22;
   --on-paper-1:rgba(10,10,10,1);
-  --on-paper-2:rgba(10,10,10,.60);
+  --on-paper-2:rgba(10,10,10,.72);
   --on-paper-line:rgba(10,10,10,.10);
   --on-olive-1:rgba(250,250,249,1);
   --on-olive-2:rgba(250,250,249,.72);
@@ -62,7 +62,7 @@ h1,h2,h3,.display{font-family:'Onest',system-ui,sans-serif;font-weight:700;line-
    строки. Заголовок кино-сцены задан отдельно в film.css: там ширина плашки
    620px, и 66px туда не влезают. */
 h1{font-size:clamp(32px,4.6vw,68px);letter-spacing:-.035em}
-h2{font-size:clamp(26px,2.9vw,42px);text-wrap:balance}
+h2{font-size:clamp(26px,2.9vw,42px);text-wrap:balance;line-height:1.2}
 h1{text-wrap:balance}
 /* средний ярус шкалы: без него прыжок с заголовка сразу на 18px читается провалом */
 /* Вес 600, а не 700. Все заголовки сайта жили в одном начертании, и разница
@@ -93,7 +93,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 
 section{padding:clamp(72px,9vw,140px) 0}
 /* липкая шапка резала заголовок секции пополам при переходе по якорю */
-section[id]{scroll-margin-top:84px}
+section[id]{scroll-margin-top:88px}
 .s-paper{background:var(--paper)}
 .s-sand{background:var(--sand)}
 .s-olive{background:var(--olive);color:var(--on-olive-1)}
@@ -117,8 +117,13 @@ section[id]{scroll-margin-top:84px}
    заявки», и полезнее всего она именно пока форму заполняют. Липкость
    превращает пустоту в поведение: список едет рядом до конца формы.
    Замер: 328px карточки плюс 108px отступа = 436px, в экран влезает. */
+/* То же и в «Как я беру деньги»: колонка с текстом на 205px длиннее карточки,
+   и под карточкой висела дыра. Липкость превращает её в поведение: список «за
+   что вы платите» едет рядом, пока читают про деньги. Замер: 407+108=515 при
+   экране 900. */
 @media (min-width:861px){
-  #zapis .aside-card{position:sticky;top:clamp(90px,12vh,120px)}
+  #zapis .aside-card,
+  #dengi .aside-card{position:sticky;top:clamp(90px,12vh,120px)}
 }
 .on-dark .aside-card,.s-olive .aside-card,.s-ink .aside-card{
   background:rgba(250,250,249,.06);border-color:var(--on-olive-line)}
@@ -166,6 +171,17 @@ section[id]{scroll-margin-top:84px}
 .topbar .row{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:68px}
 .brand{font-family:'Onest',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none}
 .topbar .btn{padding:11px 20px;font-size:15px}
+/* Якоря по разделам. Страница 7.5 тысяч пикселей, и вело по ней одно только
+   «Записаться». Ниже 900px прячем: четыре ссылки не встают рядом с кнопкой, а
+   заводить гамбургер ради четырёх якорей значит менять механизм навигации
+   ради экономии одной строки. */
+.topnav{display:flex;gap:clamp(14px,1.8vw,28px);margin-left:auto;
+  margin-right:clamp(14px,2vw,28px)}
+.topnav a{text-decoration:none;font-size:15px;color:var(--on-paper-2);
+  padding:6px 0;border-bottom:1px solid transparent;
+  transition:color .25s var(--e-ui),border-color .25s var(--e-ui)}
+.topnav a:hover{color:var(--on-paper-1);border-color:var(--on-paper-line)}
+@media (max-width:900px){ .topnav{display:none} }
 
 .crumbs{font-size:14px;color:var(--on-paper-2);padding-top:26px}
 .crumbs a{text-decoration:none;border-bottom:1px solid var(--on-paper-line)}
@@ -173,7 +189,7 @@ section[id]{scroll-margin-top:84px}
 .page-hero{display:grid;gap:clamp(24px,4vw,52px);grid-template-columns:1.05fr .95fr;align-items:center;
   padding-top:clamp(30px,4vw,52px)}
 .page-hero img{width:100%;border-radius:var(--r);box-shadow:var(--shadow-olive)}
-.page-hero .cap{font-size:12.5px;color:var(--on-paper-2);margin-top:8px}
+.page-hero .cap{font-size:13px;color:var(--on-paper-2);margin-top:8px}
 
 /* Картинка раздела. Не украшение: сюжет у каждой свой и привязан к тому,
    о чём раздел — учреждение к отказам, стол к разбору, улица к семье.
@@ -187,7 +203,7 @@ section[id]{scroll-margin-top:84px}
 .sec-img{margin:clamp(26px,3vw,38px) 0 0}
 .sec-img img{display:block;width:100%;height:auto;border-radius:var(--r);
   box-shadow:var(--shadow-olive)}
-.sec-img .cap{font-size:12.5px;color:var(--on-paper-2);margin-top:8px}
+.sec-img .cap{font-size:13px;color:var(--on-paper-2);margin-top:8px}
 .on-dark .sec-img .cap{color:var(--on-olive-2)}
 /* полоса во всю ширину колонки: разрывает текстовую стену там, где читатель
    уже устал — сразу после тёмного списка документов */

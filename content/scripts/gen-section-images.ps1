@@ -15,14 +15,28 @@ $ErrorActionPreference = 'Stop'
 $gen = Join-Path $PSScriptRoot 'gen-image.ps1'
 $dst = Join-Path $PSScriptRoot '..\assets\img\src'
 
-$common = 'muted warm palette, sand and olive and limestone tones, soft natural light, film photograph, fine grain, calm, deserted'
+# «soft natural light» из первого захода работало против резкости. Свет теперь
+# задаёт каждый промпт сам, здесь остаётся только палитра и настроение.
+$common = 'muted warm palette, sand and olive and limestone tones, film photograph, fine grain, calm, deserted'
 
 $jobs = @(
-  @{ name = 'otkaz';    w = 800;  h = 1000; seed = 11
-     p = 'empty waiting corridor inside a Mediterranean government building, pale limestone walls, tall window with wooden louvered shutters casting hard stripes of sunlight across a stone floor, a row of empty wooden chairs along the wall, deserted quiet interior' }
+  # Жюри завернуло обе как «размытую ватную AI-графику». Три поправки разом.
+  # Первая: размер. Pollinations режет по ПЛОЩАДИ около 590 тысяч пикселей, и
+  # запрошенные 800x1000 вернулись как 686x858, а 1024x640 как 971x607. Просим
+  # 1024x576 — это ровно у потолка, даёт максимум ширины, а кадрирование под
+  # нужную пропорцию делает уже prep-section-images.py.
+  # Вторая: слова. Мягкость идёт от глубины кадра, поэтому просим deep focus и
+  # жёсткий свет, а не «soft natural light», как в первом заходе.
+  # Третья: обработка, там поднят unsharp.
+  # Глубокая перспектива коридора и была источником мыла: flux размывает даль,
+  # и чем длиннее уходящий вдаль объём, тем ватнее кадр. Композиция сменена на
+  # неглубокую — закрытая дверь в упор. По смыслу это даже сильнее коридора:
+  # раздел про отказ, а закрытая дверь и есть отказ.
+  @{ name = 'otkaz';    w = 1024; h = 576;  seed = 43
+     p = 'closed wooden double door at the end of a Mediterranean government corridor, seen straight on from a few steps away, flat shallow composition, sharp architectural photograph, deep focus, hard bands of sunlight from window shutters falling across the door and the stone floor, pale limestone wall, brass handle, high detail, visible wood grain and stone texture' }
 
-  @{ name = 'razbor';   w = 1024; h = 640;  seed = 12
-     p = 'a plain wooden desk beside a tall window in a Mediterranean house, early morning light through half open wooden shutters, closed blank notebook and a glass of water on the desk, whitewashed wall, empty room' }
+  @{ name = 'razbor';   w = 1024; h = 576;  seed = 42
+     p = 'wooden desk against a window with open wooden shutters in a Mediterranean room, sharp interior photograph, deep focus, crisp edges, hard afternoon sunlight striping the plastered wall, closed notebook and a glass of water on the desk, terracotta floor tiles, high detail, visible wood grain and plaster texture' }
 
   @{ name = 'terrasa';  w = 1024; h = 430;  seed = 13
      p = 'quiet terrace of a Cypriot stone house in the morning, wicker chair and small table, potted olive tree, stone railing, distant sea on the horizon beyond the railing, warm haze' }

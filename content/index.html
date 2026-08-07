@@ -48,6 +48,12 @@
 <header class="topbar grid">
   <div class="row">
     <a class="brand" href="index.html">ВНЖ Кипра</a>
+    <nav class="topnav" aria-label="Разделы страницы">
+      <a href="#osnovaniya">Основания</a>
+      <a href="#rabota">Как проходит</a>
+      <a href="#otkazy">Отказы</a>
+      <a href="#voprosy">Вопросы</a>
+    </nav>
     <a class="btn btn-primary" href="#zapis">Записаться</a>
   </div>
 </header>
@@ -73,61 +79,32 @@
          больше не трогает и страницу не держит: видео идёт по кругу само,
          подписи идут за ним. Кнопки вынесены из плашек и стоят всегда, иначе
          на девять секунд из десяти на первом экране не было бы CTA. -->
+    <!-- Заголовок с лидом стоит ПОСТОЯННО, а история идёт титром внизу.
+         Раньше предложение было первой из семи сменяющихся плашек и держалось
+         6.7 секунды из 27: зайдя в середине цикла, человек видел «03 Подача»
+         вместо того, что здесь вообще предлагают. Плашки при этом дословно
+         повторяли секцию «Как проходит работа» ниже, поэтому сжаты в строку:
+         содержание не потеряно, а место освободилось под предложение. -->
     <div class="film-overlay grid">
-      <div class="beats">
-        <div class="beat on" data-at="0">
-          <div class="plate">
-            <!-- неразрывные пробелы: перенос должен идти «Вид на жительство /
-                 Кипра», а не оставлять висячее «на» в конце строки -->
-            <h1>Вид&nbsp;на&nbsp;жительство Кипра</h1>
-            <p class="lead" style="color:rgba(250,250,249,.88)">Разберу вашу ситуацию, подберу основание и доведу до решения миграционной службы.</p>
-          </div>
-        </div>
-        <div class="beat" data-at="0.25">
-          <div class="plate">
-            <h2>Кипр входит в ЕС</h2>
-            <p>Республика Кипр состоит в Европейском союзе с 2004 года. Легальный статус здесь дают по нескольким основаниям, и они не взаимозаменяемы.</p>
-          </div>
-        </div>
-        <div class="beat" data-at="0.37">
-          <div class="plate">
-            <div class="step-no">01</div>
-            <h2>Разбор</h2>
-            <p>Смотрим доход, семью, работу и планы. Определяем, какое основание ваше, а какое не пройдёт.</p>
-          </div>
-        </div>
-        <div class="beat" data-at="0.49">
-          <div class="plate">
-            <div class="step-no">02</div>
-            <h2>Документы</h2>
-            <p>Собираем пакет: подтверждение дохода, страховка, справки, переводы. Здесь теряют больше всего времени.</p>
-          </div>
-        </div>
-        <div class="beat" data-at="0.61">
-          <div class="plate">
-            <div class="step-no">03</div>
-            <h2>Подача</h2>
-            <p>Запись, биометрия, подача. Дальше ожидание, и сроки зависят не от меня, а от органа.</p>
-          </div>
-        </div>
-        <div class="beat" data-at="0.73">
-          <div class="plate">
-            <div class="step-no">04</div>
-            <h2>Решение</h2>
-            <p>Карта резидента либо отказ с указанием причины. Оба исхода штатные, и ко второму тоже нужно быть готовым.</p>
-          </div>
-        </div>
-        <div class="beat" data-at="0.87">
-          <div class="plate">
-            <h2>Отказ не приговор</h2>
-            <p>У отказа всегда есть причина, и почти всегда есть следующий шаг. Разберём вашу ситуацию до того, как вы потратите деньги.</p>
-          </div>
-        </div>
+      <div class="plate hero-plate">
+        <!-- неразрывные пробелы: перенос должен идти «Вид на жительство /
+             Кипра», а не оставлять висячее «на» в конце строки -->
+        <h1>Вид&nbsp;на&nbsp;жительство Кипра</h1>
+        <p class="lead" style="color:rgba(250,250,249,.88)">Разберу вашу ситуацию, подберу основание и доведу до решения миграционной службы.</p>
       </div>
 
       <div class="hero-cta">
         <a class="btn btn-primary" href="#zapis" style="background:var(--brick)">Записаться на разбор</a>
         <a class="btn btn-ghost" href="#osnovaniya" style="border-color:rgba(250,250,249,.34);color:#fafaf9">С чего начать</a>
+      </div>
+
+      <div class="beats">
+        <div class="beat on" data-at="0"><p><b>Кипр в ЕС с 2004 года.</b> Оснований несколько, и они не взаимозаменяемы.</p></div>
+        <div class="beat" data-at="0.2"><p><b class="n">01</b> <b>Разбор.</b> Смотрим доход, семью, работу и планы.</p></div>
+        <div class="beat" data-at="0.35"><p><b class="n">02</b> <b>Документы.</b> Здесь теряют больше всего времени.</p></div>
+        <div class="beat" data-at="0.5"><p><b class="n">03</b> <b>Подача.</b> Запись, биометрия, дальше ожидание.</p></div>
+        <div class="beat" data-at="0.65"><p><b class="n">04</b> <b>Решение.</b> Карта резидента либо отказ с указанием причины.</p></div>
+        <div class="beat" data-at="0.8"><p><b>Отказ не приговор.</b> Причина есть всегда, следующий шаг почти всегда.</p></div>
       </div>
     </div>
 
@@ -179,7 +156,7 @@
 </section>
 
 <!-- ── КАК ПРОХОДИТ РАБОТА (full-bleed) ──────────────── -->
-<section class="grid s-olive on-dark full">
+<section id="rabota" class="grid s-olive on-dark full">
   <div class="grid full" style="padding:0">
     <div class="work-split">
     <div>
@@ -243,7 +220,7 @@
 
 
 <!-- ── ЧЕСТНЫЙ БЛОК (full-bleed) ──────────────────────── -->
-<section class="grid s-ink on-dark full">
+<section id="otkazy" class="grid s-ink on-dark full">
   <div class="grid full" style="padding:0">
     <div class="honest-split">
     <div class="honest-intro">
@@ -257,9 +234,9 @@
            и дверь в конце закрыта. Блок липкий, поэтому кадр приземистый —
            высокий перестал бы помещаться в экран вместе с вводкой. -->
       <figure class="sec-img">
-        <img src="assets/img/otkaz.avif" width="686" height="458" loading="lazy"
-             alt="Пустой коридор учреждения, полосы света от ставен на полу, в конце закрытая дверь">
-        <figcaption class="cap">Иллюстрация: коридор учреждения</figcaption>
+        <img src="assets/img/otkaz.avif" width="864" height="576" loading="lazy"
+             alt="Закрытая двустворчатая дверь учреждения, свет пробивается из-за неё">
+        <figcaption class="cap">Иллюстрация: дверь, за которой решают</figcaption>
       </figure>
     </div>
 
@@ -294,7 +271,7 @@
 </section>
 
 <!-- ── ДЕНЬГИ ─────────────────────────────────────────── -->
-<section class="grid s-paper">
+<section id="dengi" class="grid s-paper">
   <div class="two-col">
     <div>
       <div class="head-wrap" style="margin-bottom:24px"><h2>Как я беру деньги</h2></div>
@@ -328,7 +305,7 @@
 </section>
 
 <!-- ── FAQ ────────────────────────────────────────────── -->
-<section class="grid s-sand">
+<section id="voprosy" class="grid s-sand">
   <div class="two-col">
     <div>
       <div class="head-wrap" style="margin-bottom:22px"><h2>Частые вопросы</h2></div>
@@ -451,10 +428,13 @@
      горизонтальный, и при выходе раньше этой строки телефон с отключённым
      движением получал широкий кадр в вертикальный бокс. */
   // мобильный файл вертикальный и вчетверо легче десктопного
-  var MOB = lowEnd || innerWidth < 860;
+  function isMob(){ return lowEnd || innerWidth < 860; }
+  function fileFor(m){ return 'assets/film/cyprus-descent' + (m ? '-m' : '') + '.mp4'; }
+  function posterFor(m){ return 'assets/film/poster' + (m ? '-m' : '') + '.avif'; }
+  var MOB = isMob();
   // постер это первый кадр того же ролика: f_001 показывал облака, а видео
   // начинается с побережья, и подмена читалась рывком ещё до движения
-  video.poster = MOB ? 'assets/film/poster-m.avif' : 'assets/film/poster.avif';
+  video.poster = posterFor(MOB);
 
   if (reduce){
     // движение выключено в системе: остаётся постер
@@ -482,12 +462,31 @@
      `load`, а не DOMContentLoaded: к первому нужны уже отрисованные шрифты,
      иначе выигрыш съедается ими же. */
   function startFilm(){
-    video.src = MOB ? 'assets/film/cyprus-descent-m.mp4' : 'assets/film/cyprus-descent.mp4';
+    video.src = fileFor(MOB);
     video.load();
     tryPlay();
   }
   if (document.readyState === 'complete') startFilm();
   else addEventListener('load', startFilm, {once: true});
+
+  /* Ширина считалась ОДИН раз при загрузке, и файл оставался прежним навсегда.
+     Поверни планшет из портрета в альбом через порог 860px, и вертикальный
+     ролик 600x750 растягивался бы на широкий бокс, а горизонтальный 1280x534
+     обрезался бы в портретном до одной полосы неба. Живой посетитель на это
+     наткнётся только при повороте, но лечится это тремя строками. */
+  var swapTimer = 0;
+  addEventListener('resize', function(){
+    clearTimeout(swapTimer);
+    swapTimer = setTimeout(function(){
+      var now = isMob();
+      if (now === MOB || !video.src) return;
+      MOB = now;
+      video.poster = posterFor(MOB);
+      video.src = fileFor(MOB);
+      video.load();
+      tryPlay();
+    }, 250);
+  }, {passive:true});
 
   /* Телефон мог отказать в автозапуске: на iOS его глушит режим энергосбережения,
      на Android бывает экономия трафика, и никакой muted тут не помогает. Внешне

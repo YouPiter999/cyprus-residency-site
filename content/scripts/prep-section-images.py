@@ -27,7 +27,7 @@ _spec.loader.exec_module(bf)
 SRC = pathlib.Path(__file__).parent.parent / "assets" / "img" / "src"
 DST = pathlib.Path(__file__).parent.parent / "assets" / "img"
 
-# имя, соотношение сторон, доля сверху при кропе, (яркость, контраст)
+# имя, соотношение сторон, доля сверху при кропе, (яркость, контраст), резкость
 #
 # Про яркость. `grade()` нормализует экспозицию всех кадров к одной точке —
 # для фильма это спасение, иначе соседние планы прыгают. Но картинка раздела
@@ -39,18 +39,18 @@ JOBS = [
     # перестают помещаться, и sticky тихо перестаёт работать. Отсюда 3:2,
     # хотя исходник вертикальный — важное (полосы света и дверь в конце)
     # лежит в средней трети, её и оставляем.
-    ("otkaz", 3 / 2, 0.28, (0.84, 1.14)),
+    ("otkaz", 3 / 2, 0.42, (0.88, 1.16), 95),
     # index, «Как я беру деньги»: под текстом левой колонки, которая
     # кончалась раньше правой. Кадр 16:10 закрыл дыру и тут же сделал
     # обратную: колонка стала на 299px ДЛИННЕЕ соседней. Нужна полоса, а не
     # картинка, поэтому то же соотношение, что у полос на внутренних
     # страницах. Фокус ниже центра: важен стол, а не потолок.
-    ("razbor", 1024 / 430, 0.62, (1.0, 1.0)),
+    ("razbor", 1024 / 430, 0.55, (1.0, 1.06), 95),
     # полосы на внутренних страницах, между «Что понадобится» и «Деньги»
-    ("terrasa", 1024 / 430, 0.5, (1.0, 1.0)),
-    ("stol-okno", 1024 / 430, 0.5, (1.0, 1.0)),
-    ("dom", 1024 / 430, 0.5, (1.0, 1.0)),
-    ("ulica", 1024 / 430, 0.5, (1.0, 1.0)),
+    ("terrasa", 1024 / 430, 0.5, (1.0, 1.0), 48),
+    ("stol-okno", 1024 / 430, 0.5, (1.0, 1.0), 48),
+    ("dom", 1024 / 430, 0.5, (1.0, 1.0), 48),
+    ("ulica", 1024 / 430, 0.5, (1.0, 1.0), 48),
 ]
 
 
@@ -67,7 +67,7 @@ def crop_to(img: Image.Image, ratio: float, focus: float) -> Image.Image:
 
 def run() -> None:
     DST.mkdir(parents=True, exist_ok=True)
-    for name, ratio, focus, (bright, contrast) in JOBS:
+    for name, ratio, focus, (bright, contrast), sharpen in JOBS:
         src = SRC / f"{name}.jpg"
         if not src.exists():
             raise SystemExit(f"{name}: нет исходника {src}")
@@ -79,7 +79,7 @@ def run() -> None:
             img = ImageEnhance.Brightness(img).enhance(bright)
         if contrast != 1.0:
             img = ImageEnhance.Contrast(img).enhance(contrast)
-        img = img.filter(ImageFilter.UnsharpMask(radius=0.9, percent=48,
+        img = img.filter(ImageFilter.UnsharpMask(radius=0.9, percent=sharpen,
                                                  threshold=3))
         # чётность не нужна (это не видео), но кратность двойке бережёт
         # AVIF от лишнего паддинга
