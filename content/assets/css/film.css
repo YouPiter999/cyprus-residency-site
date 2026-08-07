@@ -70,7 +70,7 @@
 .path:hover{transform:translateY(-4px);box-shadow:var(--shadow-olive);border-color:rgba(59,74,47,.35)}
 .path .who{font-size:15px;color:var(--on-paper-2)}
 .path h3{margin:.3rem 0 .45rem}
-.path .desc{font-size:15.5px;color:var(--on-paper-2)}
+.path .desc{font-size:15px;color:var(--on-paper-2)}
 .path .go{font-weight:600;color:var(--brick-text);font-size:16px}
 .path:hover .go{color:var(--brick)}
 .path.tall{background:var(--sand)}
@@ -85,8 +85,13 @@
 /* номер несёт смысл, а не только декор. 34% давали 2.5:1, 50% всё ещё около
    3:1 и судья снова его не увидел. Кирпич сюда нельзя: на оливе он даёт
    1.76:1, это записано в ART-DIRECTION */
-.step .n{font-family:'Onest',sans-serif;font-weight:700;font-size:clamp(28px,3vw,42px);
-  line-height:1;color:rgba(250,250,249,.82);letter-spacing:-.03em}
+/* Цифры пропорциональные, поэтому 01 и 04 разной ширины, а колонка номера
+   задана `auto` и подстраивается под каждую строку отдельно. Заголовки шагов
+   вставали на x=175/182/188/190, и левый край списка читался рваным. Табличные
+   цифры уравнивают знаки, min-width страхует на случай однозначного номера. */
+.step .n{font-family:'Onest',sans-serif;font-weight:700;font-size:clamp(26px,2.2vw,32px);
+  line-height:1;color:rgba(250,250,249,.82);letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;min-width:2ch}
 /* заголовок шага и абзац стояли в двух пикселях друг от друга и слипались */
 .step h3{margin-bottom:9px}
 
@@ -137,7 +142,7 @@
      последнюю строку предыдущей, и это читалось обрывом, а не наложением */
   display:grid;gap:8px;align-content:start;min-height:clamp(232px,27vh,268px)}
 .stack-no{font-family:'Onest',sans-serif;font-weight:700;letter-spacing:-.03em;
-  font-size:clamp(28px,3vw,40px);line-height:1;color:rgba(250,250,249,.5)}
+  font-size:clamp(26px,2.2vw,32px);line-height:1;color:rgba(250,250,249,.5)}
 .stack-card h3{font-size:clamp(21px,2.2vw,28px)}
 .stack-card p{max-width:52ch}
 /* Липкость действует, пока под элементом есть место в родителе. Запас снизу

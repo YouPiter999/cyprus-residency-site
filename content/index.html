@@ -11,8 +11,20 @@
 <meta property="og:title" content="ВНЖ Кипра: разбор и сопровождение">
 <meta property="og:description" content="Четыре основания для легального статуса на Кипре. Разбираю ситуацию и веду до решения.">
 <meta property="og:type" content="website">
-<link rel="preload" as="image" href="assets/film/frames/f_001.avif" fetchpriority="high" media="(min-width: 861px)">
-<link rel="preload" as="image" href="assets/film/frames-m/f_001.avif" fetchpriority="high" media="(max-width: 860px)">
+<!-- Тянем ПОСТЕР, а не кадр секвенции. Здесь стояли frames/f_001.avif с
+     высоким приоритетом, оставшиеся от старой сцены из отдельных кадров:
+     26 КБ качались на критическом пути и не показывались вообще, потому что
+     первым экраном давно работает poster.avif от того же ролика. -->
+<link rel="preload" as="image" href="assets/film/poster.avif" fetchpriority="high" media="(min-width: 861px)">
+<link rel="preload" as="image" href="assets/film/poster-m.avif" fetchpriority="high" media="(max-width: 860px)">
+
+<!-- Шрифты первого экрана. Замер живого сайта: шесть woff2 стартуют только
+     после разбора CSS и финишируют к 900мс, то есть уже ПОСЛЕ первой
+     отрисовки, и заголовок успевает мелькнуть подменным шрифтом. Тянем
+     заранее ровно два кириллических подмножества, которыми набраны H1 и
+     текст под ним; латиница и остальные начертания подождут очереди. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/onest-700-5.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/manrope-400-2.woff2">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/site.css">
@@ -52,7 +64,7 @@
      они дословно повторяли секцию «Как проходит работа» ниже. -->
 <section id="film" class="grid" style="padding:0">
   <div class="full film-hero">
-    <video id="seq" muted playsinline loop autoplay preload="auto"
+    <video id="seq" muted playsinline loop autoplay preload="none"
       disablepictureinpicture poster="assets/film/poster.avif"
       aria-label="Спуск с высоты: облака, море, побережье и вода у берега"></video>
     <div class="film-shade" aria-hidden="true"></div>
@@ -124,7 +136,12 @@
 </section>
 
 <!-- ── РАЗВИЛКА ───────────────────────────────────────── -->
-<section id="osnovaniya" class="grid s-paper">
+<!-- Песок, а не бумага. Высота сцены намеренно 86svh, чтобы под первым экраном
+     было видно продолжение. Но следующая секция шла цветом бумаги, то есть
+     цветом фона страницы, и намёк читался не «дальше есть раздел», а «под
+     видео полоса пустоты в 57 пикселей», то есть багом вёрстки. Тёплая
+     подложка делает край раздела видимым, а замысел явным. -->
+<section id="osnovaniya" class="grid s-sand">
   <!-- отрицательный отступ убран: заголовок стоял на 40px левее лида и карточек,
        и это читалось ошибкой вёрстки, а не приёмом -->
   <div class="head-wrap">
@@ -138,7 +155,7 @@
       <div>
         <p class="who">Живу на доход из-за рубежа</p>
         <h3>Визитёрский ВНЖ</h3>
-        <p style="font-size:15.5px;color:var(--on-paper-2)">Для тех, кто не работает на Кипре и живёт на пенсию, аренду, дивиденды или накопления. Продлевается ежегодно.</p>
+        <p style="font-size:15px;color:var(--on-paper-2)">Для тех, кто не работает на Кипре и живёт на пенсию, аренду, дивиденды или накопления. Продлевается ежегодно.</p>
       </div>
       <span class="go">Как это работает</span>
     </a>
@@ -281,8 +298,11 @@
   <div class="two-col">
     <div>
       <div class="head-wrap" style="margin-bottom:24px"><h2>Как я беру деньги</h2></div>
-      <p class="lead">Фиксированная сумма за этап. Не процент от результата и не оплата по факту одобрения: решение принимает миграционная служба, а не консультант, и брать деньги за чужое решение нечестно.</p>
-      <p style="margin-top:16px">Сумму называю на разборе, когда вижу объём работы по вашему случаю. До этого любая цифра будет выдумкой.</p>
+      <!-- Иерархия была перевёрнута: главную мысль раздела набирали
+           приглушённым коричневым, а уточнение под ней почти чёрным, и глаз
+           начинал читать со второго абзаца. Теперь наоборот. -->
+      <p class="lead" style="color:var(--on-paper-1)">Фиксированная сумма за этап. Не процент от результата и не оплата по факту одобрения: решение принимает миграционная служба, а не консультант, и брать деньги за чужое решение нечестно.</p>
+      <p style="margin-top:16px;color:var(--on-paper-2)">Сумму называю на разборе, когда вижу объём работы по вашему случаю. До этого любая цифра будет выдумкой.</p>
 
       <!-- Тот самый разбор, за который берутся деньги: стол, за которым
            разбирают случай. Денег в кадре нет намеренно — раздел про то,
@@ -400,8 +420,14 @@
   </div>
 </footer>
 
-<script src="assets/js/gsap.min.js"></script>
-<script src="assets/js/ScrollTrigger.min.js"></script>
+<!-- defer, а не обычная загрузка: вдвоём эти файлы весят 46 КБ по проводу и
+     стартуют вместе с CSS, отбирая полосу у шрифтов первого экрана. К первой
+     отрисовке ни один из них не нужен: они возят налипание карточек далеко
+     внизу страницы. Важное следствие: код НИЖЕ, который их использует,
+     обязан ждать DOMContentLoaded — отложенные скрипты выполняются перед
+     этим событием, а инлайновые нет. -->
+<script defer src="assets/js/gsap.min.js"></script>
+<script defer src="assets/js/ScrollTrigger.min.js"></script>
 <script>
 (function(){
   'use strict';
@@ -421,29 +447,47 @@
   var video = document.getElementById('seq');
   if (!video) return;
 
+  /* Постер выбираем ПЕРВЫМ делом, до всех отказов ниже. В разметке стоит
+     горизонтальный, и при выходе раньше этой строки телефон с отключённым
+     движением получал широкий кадр в вертикальный бокс. */
+  // мобильный файл вертикальный и вчетверо легче десктопного
+  var MOB = lowEnd || innerWidth < 860;
+  // постер это первый кадр того же ролика: f_001 показывал облака, а видео
+  // начинается с побережья, и подмена читалась рывком ещё до движения
+  video.poster = MOB ? 'assets/film/poster-m.avif' : 'assets/film/poster.avif';
+
   if (reduce){
     // движение выключено в системе: остаётся постер
     video.removeAttribute('autoplay');
     video.removeAttribute('preload');
     return;
   }
-  // экономия трафика не повод не показывать сцену совсем: грузим по факту
-  // появления на экране, а не заранее
-  if (saveData) video.preload = 'metadata';
-
-  // мобильный файл вертикальный и вчетверо легче десктопного
-  var MOB = lowEnd || innerWidth < 860;
-  // постер это первый кадр того же ролика: f_001 показывал облака, а видео
-  // начинается с побережья, и подмена читалась рывком ещё до движения
-  video.poster = MOB ? 'assets/film/poster-m.avif' : 'assets/film/poster.avif';
-  video.src = MOB ? 'assets/film/cyprus-descent-m.mp4' : 'assets/film/cyprus-descent.mp4';
-  video.load();
+  /* При экономии трафика ролик не подключаем вовсе: остаётся постер, то есть
+     первый кадр той же сцены. Раньше здесь стояло preload='metadata', но
+     атрибут теперь и так `none`, и строка работала бы НАОБОРОТ: повышала бы
+     аппетит там, где его просили снизить. */
+  if (saveData) return;
 
   function tryPlay(){
     var p = video.play();
     if (p && p.catch) p.catch(function(){});
   }
-  tryPlay();
+
+  /* Постер ставим сразу, ролик подключаем ПОСЛЕ загрузки страницы.
+     Файл весит мегабайты и на замере докачивался двадцать секунд: начатый
+     сразу, он отбирает полосу у шрифтов и картинок первого экрана. Постер
+     это первый кадр того же ролика, поэтому подмены на старте не видно, а
+     ждать приходится только движения.
+
+     `load`, а не DOMContentLoaded: к первому нужны уже отрисованные шрифты,
+     иначе выигрыш съедается ими же. */
+  function startFilm(){
+    video.src = MOB ? 'assets/film/cyprus-descent-m.mp4' : 'assets/film/cyprus-descent.mp4';
+    video.load();
+    tryPlay();
+  }
+  if (document.readyState === 'complete') startFilm();
+  else addEventListener('load', startFilm, {once: true});
 
   /* Телефон мог отказать в автозапуске: на iOS его глушит режим энергосбережения,
      на Android бывает экономия трафика, и никакой muted тут не помогает. Внешне
@@ -504,9 +548,20 @@
    диапазона на верх СЛЕДУЮЩЕГО блока, а не на конец всей стопки, иначе
    первая карточка ужимается сразу за все три хода.
    Отдельным IIFE, потому что сцена выше выходит раньше при отключённом
-   движении, и стопка тогда осталась бы без обработчиков. */
+   движении, и стопка тогда осталась бы без обработчиков.
+
+   Ждём DOMContentLoaded: gsap и ScrollTrigger теперь грузятся с defer, а
+   инлайновый скрипт выполняется РАНЬШЕ них. Без ожидания проверка на
+   `typeof gsap === 'undefined'` срабатывала бы всегда, и стопка тихо
+   осталась бы без анимации: молча, без ошибки в консоли. */
 (function(){
   'use strict';
+  if (document.readyState === 'loading') {
+    addEventListener('DOMContentLoaded', init, {once: true});
+  } else {
+    init();
+  }
+  function init(){
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (typeof gsap === 'undefined' || !window.ScrollTrigger) return;
 
@@ -541,6 +596,7 @@
       }
     });
   });
+  }
 })();
 </script>
 <!-- форма живёт в общем файле: дублировать её логику на пяти страницах

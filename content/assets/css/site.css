@@ -65,7 +65,10 @@ h1{font-size:clamp(32px,4.6vw,68px);letter-spacing:-.035em}
 h2{font-size:clamp(26px,2.9vw,42px);text-wrap:balance}
 h1{text-wrap:balance}
 /* средний ярус шкалы: без него прыжок с заголовка сразу на 18px читается провалом */
-h3{font-size:clamp(21px,2.1vw,25px);letter-spacing:-.02em;line-height:1.22}
+/* Вес 600, а не 700. Все заголовки сайта жили в одном начертании, и разница
+   между h2 и h3 держалась только на кегле, который у них почти совпадал.
+   Начертание Onest 600 уже подключено, новых файлов это не добавляет. */
+h3{font-size:clamp(21px,2.1vw,25px);letter-spacing:-.02em;line-height:1.22;font-weight:600}
 p{max-width:62ch}
 .lead{font-size:clamp(17px,1.5vw,21px);color:var(--on-paper-2)}
 
@@ -109,6 +112,14 @@ section[id]{scroll-margin-top:84px}
   grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:start}
 .aside-card{padding:clamp(24px,2.4vw,32px);border-radius:var(--r);
   background:var(--sand);border:1px solid var(--on-paper-line)}
+/* Карточка у формы липкая. Форма высокая, карточка короткая, и под ней
+   оставалось 336px мёртвой оливы. Прятать её нельзя: это «что будет после
+   заявки», и полезнее всего она именно пока форму заполняют. Липкость
+   превращает пустоту в поведение: список едет рядом до конца формы.
+   Замер: 328px карточки плюс 108px отступа = 436px, в экран влезает. */
+@media (min-width:861px){
+  #zapis .aside-card{position:sticky;top:clamp(90px,12vh,120px)}
+}
 .on-dark .aside-card,.s-olive .aside-card,.s-ink .aside-card{
   background:rgba(250,250,249,.06);border-color:var(--on-olive-line)}
 /* на чернильном фоне рамка в 14% сливалась с подложкой и карточка исчезала */
@@ -117,14 +128,14 @@ section[id]{scroll-margin-top:84px}
    в 20ch превращал «Записаться на разбор» в три строки */
 .two-col .head-wrap{max-width:none}
 .aside-card h3{margin-bottom:.6rem}
-.aside-card p{font-size:15.5px;color:var(--on-paper-2)}
+.aside-card p{font-size:15px;color:var(--on-paper-2)}
 .on-dark .aside-card p{color:var(--on-olive-2)}
 
 /* ровные строки с ценностью слева и пояснением справа: список без буллетов
    и без линейки под каждой строкой */
 .rows{display:grid;gap:0;margin-top:6px}
 .rows li{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:14px;
-  padding:13px 0;border-bottom:1px solid var(--on-paper-line);font-size:15.5px}
+  padding:13px 0;border-bottom:1px solid var(--on-paper-line);font-size:15px}
 .rows li:last-child{border-bottom:0}
 .on-dark .rows li,.s-olive .rows li,.s-ink .rows li{border-color:var(--on-olive-line)}
 .rows b{font-family:'Onest',sans-serif;font-weight:700;color:var(--brick-text);
@@ -187,7 +198,7 @@ section[id]{scroll-margin-top:84px}
 .reqs div{padding:24px;border-radius:var(--r);background:var(--paper);border:1px solid var(--on-paper-line)}
 .s-sand .reqs div{background:rgba(250,250,249,.72)}
 .reqs h3{font-size:21px;margin-bottom:.35rem}
-.reqs p{font-size:15.5px;color:var(--on-paper-2)}
+.reqs p{font-size:15px;color:var(--on-paper-2)}
 
 .docs{display:grid;gap:0;counter-reset:d}
 .docs li{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:18px;
@@ -233,6 +244,11 @@ input[aria-invalid="true"],textarea[aria-invalid="true"]{
   flex:0 0 auto;margin:0;padding:0;border-radius:6px;border:1.5px solid rgba(250,250,249,.55);
   background:transparent;cursor:pointer;position:relative;
   transition:background-color .2s var(--e-ui),border-color .2s var(--e-ui)}
+/* Зона нажатия 44x44 при коробке 24x24: сам квадрат больше делать нельзя, он
+   встанет в разнос со строкой текста, поэтому невидимый ::before расширяет
+   попадание вокруг него. Родитель уже position:relative. */
+.consent input::before{content:'';position:absolute;left:50%;top:50%;
+  width:44px;height:44px;transform:translate(-50%,-50%)}
 .consent input:checked{background:var(--paper);border-color:var(--paper)}
 .consent input:checked::after{content:'';position:absolute;left:8px;top:3.5px;
   width:6px;height:12px;border:solid var(--olive);border-width:0 2.5px 2.5px 0;
@@ -285,7 +301,7 @@ footer a{color:rgba(250,250,249,.9)}
    правило .s-olive p красит текст в светлый. На белой бумаге это невидимка */
 .sheet-paper .sheet-kicker{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
   font-weight:600;color:var(--olive)}
-.sheet-paper h3{font-size:clamp(20px,2vw,24px);margin:.35rem 0 .1rem;color:var(--on-paper-1)}
+.sheet-paper h3{margin:.35rem 0 .1rem;color:var(--on-paper-1)}
 /* линейка под шапкой бланка: полоса поверху сливалась с оливковой секцией
    и читалась обрезанным краем листа */
 .sheet-paper .sheet-sub{font-size:13.5px;color:var(--on-paper-2);
