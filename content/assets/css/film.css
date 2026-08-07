@@ -111,6 +111,14 @@
 .honest-split{display:grid;gap:clamp(28px,4vw,60px);
   grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);align-items:start}
 .honest-intro{position:sticky;top:clamp(90px,12vh,120px)}
+/* Липкий блок обязан помещаться в экран целиком, иначе он липнет верхом, а
+   низ уезжает за нижний край и картинка стоит обрезанной всю прокрутку.
+   Замер на 1440x900: вводка с отступами занимает 430px, остальное отдаём
+   кадру. На экране пониже он не ужимается, а подрезается по высоте, потому
+   что кадр важен композицией, а не полнотой. */
+@media (min-width:861px){
+  .honest-intro .sec-img img{max-height:calc(100vh - 480px);object-fit:cover}
+}
 @media (max-width:860px){
   .honest-split{grid-template-columns:1fr}
   .honest-intro{position:static}

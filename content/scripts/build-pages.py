@@ -11,6 +11,9 @@ OUT = pathlib.Path(r"C:\Users\Сергей\Downloads\егор-сайт\content")
 PAGES = [
     {
         "slug": "pink-slip",
+        "band": "terrasa",
+        "band_alt": "Терраса каменного дома под аркой, стол и плетёные кресла, вдали море",
+        "band_cap": "дом на Кипре, доход из другой страны",
         "mark": 1,
         "note": "Главная причина отказов не сумма, а то, что доход нечем доказать.",
         "title": "Визитёрский ВНЖ Кипра для живущих на доход из-за рубежа",
@@ -42,6 +45,9 @@ PAGES = [
     },
     {
         "slug": "digital-nomad",
+        "band": "stol-okno",
+        "band_alt": "Деревянный стол с ноутбуком у окна со ставнями, тёплый свет, терракотовый пол",
+        "band_cap": "рабочее место в получасе от моря",
         "mark": 2,
         "note": "Выписки за требуемый период собираются заранее, задним числом их не сделать.",
         "title": "Виза цифрового кочевника на Кипре для удалённой работы",
@@ -73,6 +79,9 @@ PAGES = [
     },
     {
         "slug": "pmzh-investicii",
+        "band": "dom",
+        "band_alt": "Фасад дома из выветренного известняка, балконы со ставнями, вечернее солнце",
+        "band_cap": "недвижимость, в которую вложены деньги",
         "mark": 2,
         "note": "Происхождение денег проверяют строго, и непрозрачный источник частая причина отказа.",
         "title": "ПМЖ Кипра по инвестициям в недвижимость",
@@ -104,6 +113,9 @@ PAGES = [
     },
     {
         "slug": "rabota-i-semya",
+        "band": "ulica",
+        "band_alt": "Тихая улица старого кипрского городка, каменные дома, зелень у стен",
+        "band_cap": "улица, на которой предстоит жить",
         "mark": 2,
         "note": "Легализация документов о родстве занимает недели, начинать стоит с неё.",
         "title": "ВНЖ Кипра через работу и воссоединение семьи",
@@ -224,6 +236,15 @@ TPL = """<!doctype html>
 </section>
 
 <section class="grid s-paper">
+  <!-- Полоса разрывает текстовую стену ровно там, где читатель уже устал:
+       сразу после тёмного списка документов. Сюжет у каждой страницы свой и
+       привязан к её основанию: терраса к жизни на доход из-за рубежа, стол
+       у окна к удалённой работе, дом к инвестициям, улица к семье. -->
+  <figure class="sec-img sec-band">
+    <img src="assets/img/{band}.avif" width="1024" height="430" loading="lazy"
+         alt="{band_alt}">
+    <figcaption class="cap">Иллюстрация: {band_cap}</figcaption>
+  </figure>
   <div class="two-col">
     <div>
       <div class="head-wrap"><h2>Деньги и сроки</h2></div>
@@ -391,6 +412,12 @@ def build(page):
     frame = OUT / "assets" / "film" / "frames" / f"{page['hero_frame']}.avif"
     if not frame.exists():
         raise SystemExit(f"{page['slug']}: кадр {frame.name} не существует")
+    # то же и для полосы раздела: её собирает prep-section-images.py, и
+    # забыть прогнать его после генерации проще простого
+    band = OUT / "assets" / "img" / f"{page['band']}.avif"
+    if not band.exists():
+        raise SystemExit(f"{page['slug']}: картинка {band.name} не собрана, "
+                         f"прогоните scripts/prep-section-images.py")
     (OUT / f"{page['slug']}.html").write_text(html, encoding="utf-8")
     return len(html)
 
