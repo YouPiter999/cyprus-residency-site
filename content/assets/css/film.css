@@ -36,23 +36,25 @@
 /* кнопки стоят всегда: подписи сменяются, действие остаётся на месте */
 .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;pointer-events:auto}
 
-/* Титр под кнопками. Строки лежат стопкой в одной точке и сменяют друг друга;
-   высоту держим фиксированной, иначе кадр под ними дышал бы на каждой смене.
-   Уходящая строка гаснет БЫСТРЕЕ, чем появляется следующая (.25 против .5 с
-   задержкой): иначе два текста накладываются в одной точке и читается двойная
-   экспозиция. */
-.beats{position:relative;min-height:52px;margin-top:clamp(20px,3vh,30px)}
+/* Плашки прежнего размера, между заголовком и кнопками. Высоту держим
+   фиксированной, иначе кнопки прыгали бы на каждой смене подписи.
+   Уходящая плашка гаснет БЫСТРЕЕ, чем появляется следующая (.25 против .5 с
+   задержкой): иначе два заголовка накладываются в одной точке и читается
+   двойная экспозиция, за что жюри и снимало балл. */
+.beats{position:relative;min-height:clamp(150px,22vh,210px);
+  margin-top:clamp(18px,2.6vh,28px)}
 .beat{position:absolute;left:0;right:0;top:0;opacity:0;
-  transform:translateY(8px);pointer-events:none;
+  transform:translateY(12px);pointer-events:none;
   transition:opacity .25s var(--e-ui),transform .25s var(--e-ui)}
 .beat.on{opacity:1;transform:none;
   transition:opacity .5s var(--e-enter) .2s,transform .5s var(--e-enter) .2s}
-.beat p{color:rgba(250,250,249,.9);font-size:15px;line-height:1.5;
-  max-width:min(58ch,92%);margin:0;
-  text-shadow:0 1px 10px rgba(10,10,10,.6)}
-.beat b{font-weight:600;color:#fafaf9}
-.beat .n{font-family:'Onest',sans-serif;font-weight:700;color:var(--brick-hi);
-  letter-spacing:-.02em;margin-right:.15em}
+.beat .plate{max-width:min(660px,92%)}
+.beat h2{color:#fafaf9;font-size:clamp(24px,2.7vw,38px)}
+.beat p{color:rgba(250,250,249,.86);margin-top:.5rem;max-width:52ch;
+  text-shadow:0 1px 10px rgba(10,10,10,.5)}
+.beat .step-no{font-family:'Onest',sans-serif;font-weight:700;
+  font-size:clamp(24px,2.4vw,34px);line-height:1;color:var(--brick-hi);
+  letter-spacing:-.03em;margin-bottom:.15rem}
 
 
 /* 4 карточки = ровно 4 клетки, все с описанием: пустая клетка или пустая
@@ -192,9 +194,10 @@
   .film-hero{height:min(78svh,640px)}
   .film-overlay{padding-bottom:clamp(48px,8vh,80px)}
   .film-overlay .plate{max-width:none}
-  /* титр на телефоне переносится, поэтому высота под две строки */
-  .beats{min-height:64px;margin-top:16px}
-  .beat p{font-size:14px}
+  /* на телефоне плашка занимает больше строк, а высота экрана меньше:
+     держим её компактнее, но кегль не режем — жалоба была именно на мелкий */
+  .beats{min-height:clamp(140px,20vh,170px);margin-top:14px}
+  .beat p{font-size:15px;line-height:1.5}
   .film-note{font-size:11.5px;padding:4px 8px}
   /* обе кнопки одной ширины: 232 против 196 читалось небрежностью */
   .hero-cta{gap:10px;flex-direction:column;align-items:stretch}
