@@ -171,6 +171,58 @@ def write_llms():
 
 ROBOTS_RE = re.compile(r'<meta name="robots" content="[^"]*">')
 
+FAQ_START = ("<!-- FAQ-JSONLD-START. Собирается scripts/build-seo.py из ВИДИМОГО\n"
+             "     блока вопросов ниже. Руками не править: перезапишется. -->")
+FAQ_END = "<!-- FAQ-JSONLD-END -->"
+FAQ_BLOCK_RE = re.compile(
+    re.escape("<!-- FAQ-JSONLD-START") + r".*?" + re.escape(FAQ_END), re.S)
+# видимый вопрос и ответ: <details><summary>В</summary><p>О</p></details>
+FAQ_ITEM_RE = re.compile(
+    r"<details><summary>(.*?)</summary><p>(.*?)</p></details>", re.S)
+
+
+def sync_index_faq():
+    """Разметка FAQ главной собирается из видимого блока, а не пишется рядом.
+
+    У подстраниц эта проблема решена генератором: там и текст, и FAQPage
+    берутся из одного списка. У главной блок свёрстан руками, и рядом лежала
+    отдельная копия тех же вопросов в JSON. Две копии одного текста расходятся
+    всегда, а разметка, обещающая не то, что видит человек, это клоакинг.
+    """
+    import json
+    path = ROOT / "index.html"
+    html = path.read_text(encoding="utf-8")
+
+    faq_div = re.search(r'<div class="faq">(.*?)</div>', html, re.S)
+    if not faq_div:
+        raise SystemExit("index.html: не найден видимый блок <div class=\"faq\">")
+    items = FAQ_ITEM_RE.findall(faq_div.group(1))
+    if not items:
+        raise SystemExit("index.html: в блоке FAQ не разобран ни один вопрос")
+
+    node = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type": "Question", "name": re.sub(r"<[^>]+>", "", q).strip(),
+             "acceptedAnswer": {"@type": "Answer",
+                                "text": re.sub(r"<[^>]+>", "", a).strip()}}
+            for q, a in items
+        ],
+    }
+    block = (FAQ_START + '\n<script type="application/ld+json">'
+             + json.dumps(node, ensure_ascii=False) + "</script>\n" + FAQ_END)
+
+    if not FAQ_BLOCK_RE.search(html):
+        raise SystemExit(
+            "index.html: нет меток FAQ-JSONLD-START/END вокруг разметки FAQ. "
+            "Оберните ими блок <script type=\"application/ld+json\"> с FAQPage.")
+    new = FAQ_BLOCK_RE.sub(lambda m: block, html, count=1)
+    if new != html:
+        path.write_text(new, encoding="utf-8")
+        return f"пересобран из {len(items)} видимых вопросов"
+    return f"уже совпадает, {len(items)} вопросов"
+
 
 def sync_index_robots():
     """index.html пишется руками, поэтому переключатель доносим сюда сами.
@@ -218,6 +270,16 @@ def check():
             problems.append(f"{name}: FAQPage должен быть ровно один, "
                             f"найдено {n_faq}")
 
+        # Разметка обязана обещать ровно то, что видит человек. Считаем
+        # видимые вопросы и вопросы в JSON-LD: расхождение это клоакинг,
+        # причём такой, который никто не заметит глазами.
+        faq_div = re.search(r'<div class="faq">(.*?)</div>', html, re.S)
+        visible = len(FAQ_ITEM_RE.findall(faq_div.group(1))) if faq_div else 0
+        in_schema = html.count('"@type": "Question"')
+        if visible != in_schema:
+            problems.append(f"{name}: видимых вопросов {visible}, "
+                            f"в разметке {in_schema}")
+
     og_file = ROOT / siteinfo.OG_IMAGE
     if not og_file.exists():
         problems.append(f"{siteinfo.OG_IMAGE} не собран: превью в мессенджерах "
@@ -241,6 +303,7 @@ def main():
     print(f"sitemap.xml  {write_sitemap()}")
     print(f"llms.txt     {write_llms()}")
     print(f"index.html   meta robots {sync_index_robots()}")
+    print(f"index.html   FAQ-разметка {sync_index_faq()}")
 
     problems = check()
     if problems:
