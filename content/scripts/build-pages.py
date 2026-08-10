@@ -175,9 +175,9 @@ TPL = """<!doctype html>
 <link rel="canonical" href="{canonical}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{canonical}">
-<meta property="og:site_name" content="ВНЖ Кипра">
+<meta property="og:site_name" content="{site_name}">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:title" content="{h1}. ВНЖ Кипра">
+<meta property="og:title" content="{h1}. {site_name}">
 <meta property="og:description" content="{desc}">
 <!-- JPEG, а не AVIF: превью в мессенджерах разворачивают далеко не все, а
      ссылку на этот сайт будут слать именно в мессенджере. -->
@@ -202,7 +202,7 @@ TPL = """<!doctype html>
 
 <header class="topbar grid">
   <div class="row">
-    <a class="brand" href="index.html">ВНЖ Кипра</a>
+    <a class="brand" href="index.html">{site_name}</a>
     <a class="btn btn-primary" href="#zapis">Записаться</a>
   </div>
 </header>
@@ -371,7 +371,7 @@ TPL = """<!doctype html>
 
 <footer class="grid">
   <div>
-    <p style="font-family:'Onest',sans-serif;font-weight:700;font-size:20px;color:#fafaf9;letter-spacing:-.02em">ВНЖ Кипра</p>
+    <p style="font-family:'Onest',sans-serif;font-weight:700;font-size:20px;color:#fafaf9;letter-spacing:-.02em">{site_name}</p>
     <p style="margin-top:10px"><a href="index.html">На главную</a></p>
     <p style="margin-top:18px;font-size:13.5px;color:rgba(250,250,249,.6)">Информация на сайте носит справочный характер и не является юридической консультацией. Требования миграционной службы меняются, проверяйте актуальные условия перед подачей.</p>
   </div>
@@ -467,6 +467,7 @@ def build(page):
                       og_image=siteinfo.BASE_URL + siteinfo.OG_IMAGE,
                       og_w=siteinfo.OG_IMAGE_W, og_h=siteinfo.OG_IMAGE_H,
                       og_alt=siteinfo.OG_IMAGE_ALT,
+                      site_name=siteinfo.SITE_NAME,
                       official=siteinfo.official_html(page["slug"]),
                       jsonld=jsonld(page),
                       **page)
