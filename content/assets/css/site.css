@@ -223,6 +223,14 @@ section[id]{scroll-margin-top:88px}
 .reqs h3{font-size:21px;margin-bottom:.35rem}
 .reqs p{font-size:15px;color:var(--on-paper-2)}
 
+/* Четыре карточки в auto-fit раскладываются как три плюс одна: во втором ряду
+   остаётся сирота и дыра справа от неё. Ровно это жюри назвало «дырами в сетке
+   карточек» на первом круге. Пары ложатся ровно, поэтому у секций с чётным
+   числом карточек сетка фиксируется в две колонки. Ниже 720px всё равно одна:
+   на телефоне auto-fit и так сворачивается. */
+.reqs.pairs{grid-template-columns:repeat(2,1fr)}
+@media (max-width:720px){ .reqs.pairs{grid-template-columns:1fr} }
+
 .docs{display:grid;gap:0;counter-reset:d}
 .docs li{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:18px;
   padding:20px 0;border-top:1px solid var(--on-olive-line)}
