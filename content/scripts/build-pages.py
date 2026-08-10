@@ -374,15 +374,27 @@ TPL = """<!doctype html>
 </section>
 </main>
 
+<!-- Подвал подстраниц вёл только «На главную». Из-за этого мобильное меню на
+     них не собиралось вовсе: nav.js берёт ссылки из .foot-nav, а её тут не
+     было, и четыре основания с телефона были недостижимы. Теперь список тот
+     же, что на главной. -->
 <footer class="grid">
-  <div>
-    <p style="font-family:'Onest',sans-serif;font-weight:700;font-size:20px;color:#fafaf9;letter-spacing:-.02em">{site_name}</p>
-    <p style="margin-top:10px"><a href="index.html">На главную</a></p>
-    <p style="margin-top:18px;font-size:13.5px;color:rgba(250,250,249,.6)">Информация на сайте носит справочный характер и не является юридической консультацией. Требования миграционной службы меняются, проверяйте актуальные условия перед подачей.</p>
+  <div class="two-col">
+    <div>
+      <p style="font-family:'Onest',sans-serif;font-weight:700;font-size:20px;color:#fafaf9;letter-spacing:-.02em">{site_name}</p>
+      <p style="margin-top:10px">Сопровождение при получении вида на жительство Республики Кипр.</p>
+      <p style="margin-top:18px;font-size:13.5px;color:rgba(250,250,249,.6)">Информация на сайте носит справочный характер и не является юридической консультацией. Требования миграционной службы меняются, проверяйте актуальные условия перед подачей.</p>
+    </div>
+    <nav class="foot-nav" aria-label="Основания для ВНЖ">
+{foot_html}
+      <a href="index.html">На главную</a>
+      <a href="#zapis">Записаться на разбор</a>
+    </nav>
   </div>
 </footer>
 <script src="assets/js/form.js"></script>
 <script src="assets/js/reveal.js"></script>
+<script src="assets/js/nav.js"></script>
 </body>
 </html>
 """
@@ -464,9 +476,12 @@ def build(page):
     other_html = "\n".join(
         f'    <a href="{s}.html"><p class="who">Другое основание</p><h3>{n}</h3></a>'
         for s, n in NAV if s != page["slug"])
+    # в подвале перечислены ВСЕ основания, включая текущее: подвал это карта
+    # сайта, а не «куда ещё сходить»
+    foot_html = "\n".join(f'      <a href="{s}.html">{n}</a>' for s, n in NAV)
 
     html = TPL.format(who_html=who_html, docs_html=docs_html, faq_html=faq_html,
-                      other_html=other_html,
+                      other_html=other_html, foot_html=foot_html,
                       robots_meta=siteinfo.robots_meta(),
                       canonical=siteinfo.canonical(page["slug"]),
                       og_image=siteinfo.BASE_URL + siteinfo.OG_IMAGE,
