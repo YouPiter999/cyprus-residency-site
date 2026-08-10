@@ -34,8 +34,16 @@
     // и человек с клавиатуры не понимает, куда его отправили
     if (!ok){ focusFirstInvalid(); return; }
 
+    // Основание берём из H1, а не из title. Раньше тут стоял
+    // title.split(':')[0], и это работало только на главной, где двоеточие
+    // есть. У подстраниц его нет, поэтому в заявку уезжал весь заголовок
+    // целиком, вместе с «(Pink Slip)» и «в 2026 году». H1 у страницы это и
+    // есть название основания.
+    var h1 = document.querySelector('h1');
+    var osnovanie = h1 ? h1.textContent.trim() : document.title;
+
     var text = 'Заявка на разбор ситуации\n'
-             + 'Основание: ' + (document.title.split(':')[0]) + '\n'
+             + 'Основание: ' + osnovanie + '\n'
              + 'Имя: ' + name.value.trim() + '\n'
              + 'Связь: ' + contact.value.trim() + '\n'
              + 'Ситуация: ' + (about.value.trim() || 'не указана');
