@@ -2,11 +2,22 @@
 
 Правило по фактам: конкретные пороги дохода, суммы и сроки НЕ публикуются.
 Они меняются, зависят от состава семьи и требуют сверки с миграционной службой.
-Вместо выдуманных цифр стоят помеченные заглушки.
-"""
-import pathlib
+Вместо выдуманных цифр стоит ссылка на первоисточник.
 
-OUT = pathlib.Path(r"C:\Users\Сергей\Downloads\егор-сайт\content")
+Режим индексации, адреса и первоисточники берутся из siteinfo.py. Здесь их
+не дублировать: два источника правды расходятся всегда, вопрос только когда.
+
+После этого скрипта прогонять build-seo.py: он пишет карту сайта и llms.txt
+и проверяет, что все пять страниц согласованы между собой.
+"""
+import json
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import siteinfo  # noqa: E402
+
+OUT = siteinfo.ROOT
 
 PAGES = [
     {
@@ -154,20 +165,37 @@ TPL = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Сайт не опубликован: пока нет контактов, статуса и цен, индексация вредна.
-     Снять этот тег и Disallow в robots.txt одновременно, перед запуском. -->
-<meta name="robots" content="noindex, nofollow">
+<!-- Режим индексации задаёт ОДИН переключатель PUBLISHED в scripts/siteinfo.py.
+     Руками этот тег не трогать: разъедутся пять страниц, robots.txt и карта. -->
+{robots_meta}
 <title>{title}</title>
 <meta name="description" content="{desc}">
+<!-- Без canonical адрес страницы размножается сам: с параметрами в ссылке из
+     мессенджера, со слэшем и без. Все копии показывают один текст. -->
+<link rel="canonical" href="{canonical}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{canonical}">
+<meta property="og:site_name" content="ВНЖ Кипра">
+<meta property="og:locale" content="ru_RU">
 <meta property="og:title" content="{h1}. ВНЖ Кипра">
 <meta property="og:description" content="{desc}">
-<meta property="og:type" content="article">
+<!-- JPEG, а не AVIF: превью в мессенджерах разворачивают далеко не все, а
+     ссылку на этот сайт будут слать именно в мессенджере. -->
+<meta property="og:image" content="{og_image}">
+<meta property="og:image:width" content="{og_w}">
+<meta property="og:image:height" content="{og_h}">
+<meta property="og:image:alt" content="{og_alt}">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/site.css">
 <!-- Скрытое состояние блоков включается до первой отрисовки, иначе страница
      успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
      страница без анимации нормальна, страница из невидимого текста нет. -->
 <script>var h=document.documentElement;h.className+=' js-reveal';setTimeout(function(){{if(!h.dataset.rvOk)h.className=h.className.replace(' js-reveal','')}},2500)</script>
+<!-- Разметка собирается ЗДЕСЬ, в шаблоне, и нигде больше. Урок соседнего
+     проекта: страница-специфичный FAQPage, положенный в общий шелл, протёк
+     на каждый URL и дал по два узла на страницу, оба помеченных невалидными. -->
+{jsonld}
 </head>
 <body>
 <svg class="grain" aria-hidden="true"><filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#g)"/></svg>
@@ -252,6 +280,7 @@ TPL = """<!doctype html>
       <p style="margin-top:16px">Точные цифры я называю на разборе, когда вижу вашу ситуацию. Публиковать их на странице честно не получится: они меняются, а устаревшая цифра на сайте дороже, чем её отсутствие.</p>
       <p style="margin-top:16px">За сопровождение беру фиксированную сумму за этап. Не процент от результата и не оплату по факту одобрения: решение принимает миграционная служба, а не консультант.</p>
       <p style="margin-top:16px;font-size:15px;color:var(--on-paper-2)">Сроки решения зависят от миграционной службы и её загрузки. Никакой консультант ими не управляет, поэтому честный ответ здесь диапазон, а не дата.</p>
+{official}
     </div>
     <div class="aside-card">
       <h3>За что вы платите</h3>
@@ -386,6 +415,40 @@ def q_mark(text):
     return text if text.endswith("?") else text + "?"
 
 
+def jsonld(page):
+    """Разметка страницы: хлебные крошки и её собственный FAQ.
+
+    Ровно один FAQPage на страницу, и берётся он из того же списка `faq`, что
+    и видимый блок вопросов. Разойтись с текстом на экране он не может, а
+    разметка, обещающая не то, что видит человек, это клоакинг.
+    """
+    url = siteinfo.canonical(page["slug"])
+    nodes = [
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Главная",
+                 "item": siteinfo.BASE_URL},
+                {"@type": "ListItem", "position": 2, "name": page["h1"],
+                 "item": url},
+            ],
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {"@type": "Question", "name": q_mark(q),
+                 "acceptedAnswer": {"@type": "Answer", "text": a}}
+                for q, a in page["faq"]
+            ],
+        },
+    ]
+    return "\n".join('<script type="application/ld+json">'
+                     + json.dumps(n, ensure_ascii=False) + '</script>'
+                     for n in nodes)
+
+
 def build(page):
     who_html = "\n".join(
         f'    <div><h3>{t}</h3><p>{d}</p></div>' for t, d in page["who"])
@@ -398,7 +461,15 @@ def build(page):
         for s, n in NAV if s != page["slug"])
 
     html = TPL.format(who_html=who_html, docs_html=docs_html, faq_html=faq_html,
-                      other_html=other_html, **page)
+                      other_html=other_html,
+                      robots_meta=siteinfo.robots_meta(),
+                      canonical=siteinfo.canonical(page["slug"]),
+                      og_image=siteinfo.BASE_URL + siteinfo.OG_IMAGE,
+                      og_w=siteinfo.OG_IMAGE_W, og_h=siteinfo.OG_IMAGE_H,
+                      og_alt=siteinfo.OG_IMAGE_ALT,
+                      official=siteinfo.official_html(page["slug"]),
+                      jsonld=jsonld(page),
+                      **page)
     if "\u2014" in html or "\u2013" in html:
         raise SystemExit(f"{page['slug']}: найдено длинное тире, это запрещено")
     if 'class="todo"' in html:
@@ -407,6 +478,17 @@ def build(page):
     for bad in BAD_PHRASES:
         if bad in html:
             raise SystemExit(f"{page['slug']}: служебная фраза «{bad}» в интерфейсе")
+    # Ровно один canonical и ровно один FAQPage. Оба дефекта тихие: страница
+    # выглядит целой, а поисковик схлопывает её с соседней либо бракует
+    # разметку. Ловить их глазами по пяти файлам нельзя, поэтому ловит сборка.
+    if html.count('rel="canonical"') != 1:
+        raise SystemExit(f"{page['slug']}: canonical должен быть ровно один")
+    if html.count('"FAQPage"') != 1:
+        raise SystemExit(f"{page['slug']}: FAQPage должен быть ровно один")
+    if html.count("<h1") != 1:
+        raise SystemExit(f"{page['slug']}: h1 должен быть ровно один")
+    if not siteinfo.official_html(page["slug"]):
+        raise SystemExit(f"{page['slug']}: нет первоисточника в siteinfo.OFFICIAL")
     # кадр героя жил ссылкой на f_150, которого нет: секвенция кончается на 134.
     # молчаливый 404 в шапке страницы должен ловиться сборкой, а не глазами
     frame = OUT / "assets" / "film" / "frames" / f"{page['hero_frame']}.avif"
@@ -422,7 +504,15 @@ def build(page):
     return len(html)
 
 
-for p in PAGES:
-    size = build(p)
-    print(f"{p['slug']}.html  {size // 1024} КБ")
-print("Готово")
+def main():
+    for p in PAGES:
+        size = build(p)
+        print(f"{p['slug']}.html  {size // 1024} КБ")
+    mode = "ОТКРЫТ для поисковиков" if siteinfo.PUBLISHED else "закрыт от поисковиков"
+    print(f"Готово. Сайт {mode}. Дальше: python scripts/build-seo.py")
+
+
+# под __main__, чтобы build-seo.py мог забрать отсюда PAGES, не перезаписывая
+# при этом страницы: импорт с побочным эффектом сборки это ловушка
+if __name__ == "__main__":
+    main()

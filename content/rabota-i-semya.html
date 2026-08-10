@@ -3,20 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Сайт не опубликован: пока нет контактов, статуса и цен, индексация вредна.
-     Снять этот тег и Disallow в robots.txt одновременно, перед запуском. -->
+<!-- Режим индексации задаёт ОДИН переключатель PUBLISHED в scripts/siteinfo.py.
+     Руками этот тег не трогать: разъедутся пять страниц, robots.txt и карта. -->
 <meta name="robots" content="noindex, nofollow">
 <title>ВНЖ Кипра через работу и воссоединение семьи</title>
 <meta name="description" content="Вид на жительство Республики Кипр по трудоустройству у кипрского работодателя и по воссоединению с семьёй.">
+<!-- Без canonical адрес страницы размножается сам: с параметрами в ссылке из
+     мессенджера, со слэшем и без. Все копии показывают один текст. -->
+<link rel="canonical" href="https://youpiter999.github.io/cyprus-residency-site/rabota-i-semya.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://youpiter999.github.io/cyprus-residency-site/rabota-i-semya.html">
+<meta property="og:site_name" content="ВНЖ Кипра">
+<meta property="og:locale" content="ru_RU">
 <meta property="og:title" content="Работа и семья. ВНЖ Кипра">
 <meta property="og:description" content="Вид на жительство Республики Кипр по трудоустройству у кипрского работодателя и по воссоединению с семьёй.">
-<meta property="og:type" content="article">
+<!-- JPEG, а не AVIF: превью в мессенджерах разворачивают далеко не все, а
+     ссылку на этот сайт будут слать именно в мессенджере. -->
+<meta property="og:image" content="https://youpiter999.github.io/cyprus-residency-site/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Облака над морем с высоты, первый кадр заставки сайта">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/site.css">
 <!-- Скрытое состояние блоков включается до первой отрисовки, иначе страница
      успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
      страница без анимации нормальна, страница из невидимого текста нет. -->
 <script>var h=document.documentElement;h.className+=' js-reveal';setTimeout(function(){if(!h.dataset.rvOk)h.className=h.className.replace(' js-reveal','')},2500)</script>
+<!-- Разметка собирается ЗДЕСЬ, в шаблоне, и нигде больше. Урок соседнего
+     проекта: страница-специфичный FAQPage, положенный в общий шелл, протёк
+     на каждый URL и дал по два узла на страницу, оба помеченных невалидными. -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://youpiter999.github.io/cyprus-residency-site/"}, {"@type": "ListItem", "position": 2, "name": "Работа и семья", "item": "https://youpiter999.github.io/cyprus-residency-site/rabota-i-semya.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Что если работодатель передумает?", "acceptedAnswer": {"@type": "Answer", "text": "Статус по трудовому основанию привязан к работе. Смена работодателя это отдельная процедура, а не формальность."}}, {"@type": "Question", "name": "Можно ли перевезти родителей?", "acceptedAnswer": {"@type": "Answer", "text": "Воссоединение с родителями регулируется отдельно и обычно строже, чем с супругом и детьми."}}, {"@type": "Question", "name": "Даёт ли брак с гражданином Кипра автоматический статус?", "acceptedAnswer": {"@type": "Answer", "text": "Нет, автоматически ничего не выдаётся. Есть процедура, и она проверяет реальность семейных отношений."}}, {"@type": "Question", "name": "Может ли супруг работать?", "acceptedAnswer": {"@type": "Answer", "text": "Зависит от основания и статуса. Это надо выяснять до переезда, а не после."}}]}</script>
 </head>
 <body>
 <svg class="grain" aria-hidden="true"><filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#g)"/></svg>
@@ -127,6 +145,7 @@
       <p style="margin-top:16px">Точные цифры я называю на разборе, когда вижу вашу ситуацию. Публиковать их на странице честно не получится: они меняются, а устаревшая цифра на сайте дороже, чем её отсутствие.</p>
       <p style="margin-top:16px">За сопровождение беру фиксированную сумму за этап. Не процент от результата и не оплату по факту одобрения: решение принимает миграционная служба, а не консультант.</p>
       <p style="margin-top:16px;font-size:15px;color:var(--on-paper-2)">Сроки решения зависят от миграционной службы и её загрузки. Никакой консультант ими не управляет, поэтому честный ответ здесь диапазон, а не дата.</p>
+      <p class="src">Первоисточник: <a href="https://www.gov.cy/mip-md/en/documents/temporary-residence/work/" rel="noopener nofollow" target="_blank">Migration Department: Work</a>, <a href="https://www.gov.cy/mip-md/en/documents/temporary-residence/family-members/" rel="noopener nofollow" target="_blank">Migration Department: Family Members</a>. Официальный портал Республики Кипр, страницы на английском.</p>
     </div>
     <div class="aside-card">
       <h3>За что вы платите</h3>

@@ -3,14 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- Сайт не опубликован: пока нет контактов, статуса и цен, индексация вредна.
-     Снять этот тег и Disallow в robots.txt одновременно, перед запуском. -->
+<!-- Этот тег руками не трогать. Им управляет ОДИН переключатель PUBLISHED в
+     scripts/siteinfo.py, а разносит его по пяти страницам и по robots.txt
+     scripts/build-seo.py. Раньше замок был двойным, из тега и Disallow, и
+     каждый раз надо было помнить снять оба; теперь помнить нечего. -->
 <meta name="robots" content="noindex, nofollow">
 <title>ВНЖ Кипра: разбор ситуации и сопровождение до карты резидента</title>
 <meta name="description" content="Помогаю получить вид на жительство Республики Кипр: разбираю ситуацию, подбираю основание, собираю документы и веду до решения миграционной службы.">
+<!-- Без canonical адрес главной размножается сам: корень каталога и
+     index.html это два адреса с одним текстом, плюс метки из мессенджеров. -->
+<link rel="canonical" href="https://youpiter999.github.io/cyprus-residency-site/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://youpiter999.github.io/cyprus-residency-site/">
+<meta property="og:site_name" content="ВНЖ Кипра">
+<meta property="og:locale" content="ru_RU">
 <meta property="og:title" content="ВНЖ Кипра: разбор и сопровождение">
 <meta property="og:description" content="Четыре основания для легального статуса на Кипре. Разбираю ситуацию и веду до решения.">
-<meta property="og:type" content="website">
+<!-- JPEG, а не AVIF: превью в мессенджерах разворачивают далеко не все, а
+     ссылку на этот сайт будут слать именно туда. Кадр тот же, что у постера
+     первого экрана, поэтому превью и открытая страница показывают одно. -->
+<meta property="og:image" content="https://youpiter999.github.io/cyprus-residency-site/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Облака над морем с высоты, первый кадр заставки сайта">
+<meta name="twitter:card" content="summary_large_image">
 <!-- Тянем ПОСТЕР, а не кадр секвенции. Здесь стояли frames/f_001.avif с
      высоким приоритетом, оставшиеся от старой сцены из отдельных кадров:
      26 КБ качались на критическом пути и не показывались вообще, потому что
@@ -33,6 +49,11 @@
      успевает мелькнуть готовой. Сторож снимает класс, если reveal.js не доехал:
      страница без анимации нормальна, страница из невидимого текста нет. -->
 <script>var h=document.documentElement;h.className+=' js-reveal';setTimeout(function(){if(!h.dataset.rvOk)h.className=h.className.replace(' js-reveal','')},2500)</script>
+<!-- Разметки об организации и о консультанте здесь НЕТ намеренно. Пока нет
+     имени, статуса и контактов Егора, ProfessionalService в schema.org был бы
+     той же выдумкой, что выдуманный отзыв, только машиночитаемой. Заготовка
+     ждёт в scripts/siteinfo.py под флагом CONSULTANT_READY. -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "ВНЖ Кипра", "url": "https://youpiter999.github.io/cyprus-residency-site/", "inLanguage": "ru"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "ВНЖ Кипра: разбор ситуации и сопровождение до карты резидента", "description": "Помогаю получить вид на жительство Республики Кипр: разбираю ситуацию, подбираю основание, собираю документы и веду до решения миграционной службы.", "inLanguage": "ru"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Нужно ли жить на Кипре постоянно?", "acceptedAnswer": {"@type": "Answer", "text": "Зависит от основания. У одних путей есть требование к присутствию, у других к отсутствию длинных перерывов. Разбираем на консультации под ваш случай."}}, {"@type": "Question", "name": "Можно ли работать на Кипре с этим статусом?", "acceptedAnswer": {"@type": "Answer", "text": "Не с любым. Часть оснований прямо запрещает местное трудоустройство, часть разрешает работу только на зарубежных заказчиков."}}, {"@type": "Question", "name": "Берут ли детей и супруга?", "acceptedAnswer": {"@type": "Answer", "text": "По большинству оснований семью можно включить, но требования к доходу при этом растут. Считаем от состава семьи."}}, {"@type": "Question", "name": "Сколько ждать решения?", "acceptedAnswer": {"@type": "Answer", "text": "Срок зависит от органа и загрузки, и никто из консультантов им не управляет. Честный ответ здесь только диапазон, а не дата."}}, {"@type": "Question", "name": "Что будет, если откажут?", "acceptedAnswer": {"@type": "Answer", "text": "У отказа есть причина в письме. Разбираем её и решаем: устранять недостатки, менять основание или подавать заново."}}]}</script>
 </head>
@@ -192,6 +213,7 @@
 
   <p style="margin-top:26px;font-size:15px;color:var(--on-paper-2)">
     Пороги дохода, суммы и сроки меняются и зависят от состава семьи. Точные цифры под вашу ситуацию называю на разборе, а не в рекламе.
+    Требования публикует <a href="https://www.gov.cy/mip-md/en/" rel="noopener nofollow" target="_blank">Migration Department Республики Кипр</a>, страницы на английском.
   </p>
 </section>
 

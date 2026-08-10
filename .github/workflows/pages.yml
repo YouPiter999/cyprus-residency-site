@@ -43,22 +43,51 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Проверить, что сайт закрыт от поисковиков
-        # пока нет контактов и фактов консультанта, страница в выдаче вредна.
-        # Проверка здесь, а не в голове: снимут noindex на одной странице
-        # из пяти и не заметят
+      - name: Проверить согласованность страниц
+        # Раньше здесь стояло жёсткое «на каждой странице обязан быть noindex».
+        # Это защищало ровно до дня запуска, а в день запуска само бы и упало.
+        # Теперь проверяется не режим, а СОГЛАСОВАННОСТЬ: закрыт так закрыт
+        # везде, открыт так открыт везде. Половина закрытого сайта хуже обеих
+        # половин, а найти такую половину глазами по пяти файлам нельзя.
+        #
+        # Заодно ловится страница без canonical: дефект тихий, страница
+        # выглядит целой, а поисковик схлопывает её с соседней.
         run: |
-          missing=0
+          closed=0
+          open=0
           for f in content/*.html; do
-            if ! grep -q 'name="robots" content="noindex' "$f"; then
-              echo "НЕТ noindex: $f"; missing=1
+            if grep -q 'name="robots" content="noindex' "$f"; then
+              closed=$((closed+1))
+            else
+              open=$((open+1))
+              echo "открыта для индексации: $f"
+            fi
+            if ! grep -q 'rel="canonical"' "$f"; then
+              echo "ОШИБКА: нет canonical в $f"
+              exit 1
             fi
           done
-          if [ "$missing" = "1" ]; then
-            echo "Публикация остановлена: сайт ещё не готов к индексации."
+          if [ "$closed" != "0" ] && [ "$open" != "0" ]; then
+            echo "ОШИБКА: сайт закрыт наполовину ($closed закрыто, $open открыто)."
+            echo "Причина почти всегда одна: правили тег руками вместо"
+            echo "переключателя PUBLISHED в content/scripts/siteinfo.py."
             exit 1
           fi
-          echo "Все страницы закрыты от поисковиков."
+          if [ "$open" != "0" ]; then
+            if grep -q 'Disallow: /' content/robots.txt; then
+              echo "ОШИБКА: страницы открыты, а robots.txt всё ещё закрывает сайт."
+              echo "Прогоните content/scripts/build-seo.py."
+              exit 1
+            fi
+            if [ ! -f content/sitemap.xml ]; then
+              echo "ОШИБКА: сайт открыт, а карты сайта нет."
+              echo "Прогоните content/scripts/build-seo.py."
+              exit 1
+            fi
+            echo "Сайт открыт для поисковиков, карта и robots на месте."
+          else
+            echo "Все $closed страниц закрыты от поисковиков."
+          fi
 
       - uses: actions/configure-pages@v5
 
